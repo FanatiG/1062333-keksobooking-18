@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
-* Студент: [Опознанный Енот](https://up.htmlacademy.ru/javascript/18/user/1062333).
-* Наставник: `Неизвестно`.
+* Студент: [Антон](https://up.htmlacademy.ru/javascript/18/user/1062333).
+* Наставник: `Руфат Хасларов`.
 
 ---
 
