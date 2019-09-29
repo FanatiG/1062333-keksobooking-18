@@ -34,10 +34,10 @@ function guestsNumber(roomsNumber, GUESTS) {
       guestsDescription = GUESTS[0];
       break;
     case 2:
-      guestsDescription = (GUESTS[getRandomNumber(0, 1)]);
+      guestsDescription = GUESTS[0] + ' ' + GUESTS[1];
       break;
     case 3:
-      guestsDescription = (GUESTS[getRandomNumber(1, 2)]);
+      guestsDescription = GUESTS[1] + ' ' + GUESTS[2];
       break;
     case 100:
       guestsDescription = GUESTS[3];
