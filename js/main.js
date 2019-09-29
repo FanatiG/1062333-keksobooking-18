@@ -5,39 +5,33 @@ function getRandomNumber(min, max) {
   return Math.floor(rand);
 }
 
-function randomArrElement(el1, el2, el3, el4, el5, el6) {
-  var arr = [];
-  if (el4 === undefined && el5 === undefined && el6 === undefined) {
-    arr = [el1, el2, el3];
-    return arr[Math.floor(Math.random() * Math.floor(arr.length))];
-  } else if (el5 === undefined && el6 === undefined) {
-    arr = [el1, el2, el3, el4];
-    return arr[Math.floor(Math.random() * Math.floor(arr.length))];
-  } else {
-    arr = [el1, el2, el3, el4, el5, el6];
-    for (var i = 0; i < getRandomNumber(i, arr.length); i++) {
-      arr.pop();
-    }
-    return arr;
+function randomArrElement() {
+  var innerArray = [];
+  for (var i = 0; i < arguments.length; i++) {
+    innerArray.push(arguments[i]);
   }
+  return innerArray[Math.floor(Math.random() * Math.floor(innerArray.length))];
 }
 
-function randomArr(el1, el2, el3, el4, el5, el6) {
-  var arr = [];
-  var i = 0;
-  if (el4 === undefined && el5 === undefined && el6 === undefined) {
-    arr = [el1, el2, el3];
-    for (i = 0; i < getRandomNumber(i, arr.length); i++) {
-      arr.pop();
-    }
-    return arr;
-  } else {
-    arr = [el1, el2, el3, el4, el5, el6];
-    for (i = 0; i < getRandomNumber(i, arr.length); i++) {
-      arr.pop();
-    }
-    return arr;
+function shuffle(arr) {
+  var j;
+  var temp;
+  for (var i = arr.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    temp = arr[j];
+    arr[j] = arr[i];
+    arr[i] = temp;
   }
+  return arr;
+}
+
+function randomArr() {
+  var innerArray = [];
+  for (var i = 0; i < arguments.length; i++) {
+    innerArray.push(arguments[i]);
+  }
+  shuffle(innerArray);
+  return innerArray;
 }
 
 function generateDomElements(objArray) {
@@ -58,22 +52,30 @@ function generateDomElements(objArray) {
 
 function generateArray() {
   var objArray = [];
+  var title = 'title ' + i;
+  var address = '600, 350';
+  var price = 0;
+  var rooms = 0;
+  var guests = 0;
+  var locationX = [];
+  var locationY = [];
+  var description = 'description';
   for (var i = 1; i < 9; i++) {
     var obj = {
       'author': {
-        'avatar': './img/avatars/user' + '0' + i + '.png'
+        'avatar': './img/avatars/user0' + i + '.png'
       },
       'offer': {
-        'title': 'title ' + i,
-        'address': '600, 350',
-        'price': 9999,
+        'title': title,
+        'address': address,
+        'price': price,
         'type': randomArrElement('palace', 'flat', 'house', 'bungalo'),
-        'rooms': 9999,
-        'guests': 9999,
+        'rooms': rooms,
+        'guests': guests,
         'checkin': randomArrElement('12:00', '13:00', '14:00'),
         'checkout': randomArrElement('12:00', '13:00', '14:00'),
         'features': randomArr('wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'),
-        'description': 'description',
+        'description': description,
         'photos': randomArr('http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg')
       },
       'location': {
@@ -81,6 +83,8 @@ function generateArray() {
         'y': getRandomNumber(130, 630)
       }
     };
+    locationX.push(obj.location.x);
+    locationY.push(obj.location.y);
     objArray.push(obj);
   }
   generateDomElements(objArray);
