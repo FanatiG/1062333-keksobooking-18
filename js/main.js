@@ -27,6 +27,44 @@ function randomArr(arr) {
   return arr;
 }
 
+function guestsNumber(roomsNumber, GUESTS) {
+  var guestsDescription;
+  switch (roomsNumber) {
+    case 1:
+      guestsDescription = GUESTS[0];
+      break;
+    case 2:
+      guestsDescription = (GUESTS[getRandomNumber(0, 1)]);
+      break;
+    case 3:
+      guestsDescription = (GUESTS[getRandomNumber(1, 2)]);
+      break;
+    case 100:
+      guestsDescription = GUESTS[3];
+      break;
+  }
+  return guestsDescription;
+}
+
+function priceValue(type) {
+  var priceDescription;
+  switch (type) {
+    case 'bungalo':
+      priceDescription = getRandomNumber(0, 1000000);
+      break;
+    case 'flat':
+      priceDescription = getRandomNumber(1000, 1000000);
+      break;
+    case 'house':
+      priceDescription = getRandomNumber(5000, 1000000);
+      break;
+    case 'palace':
+      priceDescription = getRandomNumber(10000, 1000000);
+      break;
+  }
+  return priceDescription;
+}
+
 function generateDomElements(objArray) {
   for (var i = 0; i < 8; i++) {
     var fragment = document.createDocumentFragment();
@@ -47,10 +85,9 @@ function generateArray() {
   var objArray = [];
   var TITLE = 'title ' + i;
   var ADDRESS = '600, 350';
-  var PRICE = 0;
   var TYPE = ['palace', 'flat', 'house', 'bungalo'];
-  var ROOMS = 0;
-  var GUESTS = 0;
+  var ROOMS = [1, 2, 3, 100];
+  var GUESTS = ['для 1 гостя', 'для 2 гостей', 'для 3 гостей', 'не для гостей'];
   var CHECKIN = ['12:00', '13:00', '14:00'];
   var CHECKOUT = ['12:00', '13:00', '14:00'];
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
@@ -66,10 +103,8 @@ function generateArray() {
       'offer': {
         'title': TITLE,
         'address': ADDRESS,
-        'price': PRICE,
         'type': randomArrElement(TYPE),
-        'rooms': ROOMS,
-        'guests': GUESTS,
+        'rooms': randomArrElement(ROOMS),
         'checkin': randomArrElement(CHECKIN),
         'checkout': randomArrElement(CHECKOUT),
         'features': randomArr(FEATURES),
@@ -81,6 +116,8 @@ function generateArray() {
         'y': getRandomNumber(LOCATIONY[0], LOCATIONY[1]),
       }
     };
+    obj.offer.price = priceValue(obj.offer.type);
+    obj.offer.guests = guestsNumber(obj.offer.rooms, GUESTS);
     objArray.push(obj);
   }
   generateDomElements(objArray);
