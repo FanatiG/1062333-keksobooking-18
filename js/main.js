@@ -5,12 +5,8 @@ function getRandomNumber(min, max) {
   return Math.floor(rand);
 }
 
-function randomArrElement() {
-  var innerArray = [];
-  for (var i = 0; i < arguments.length; i++) {
-    innerArray.push(arguments[i]);
-  }
-  return innerArray[Math.floor(Math.random() * Math.floor(innerArray.length))];
+function randomArrElement(arr) {
+  return arr[Math.floor(Math.random() * Math.floor(arr.length))];
 }
 
 function shuffle(arr) {
@@ -25,13 +21,10 @@ function shuffle(arr) {
   return arr;
 }
 
-function randomArr() {
-  var innerArray = [];
-  for (var i = 0; i < arguments.length; i++) {
-    innerArray.push(arguments[i]);
-  }
-  shuffle(innerArray);
-  return innerArray;
+function randomArr(arr) {
+  var index = Math.floor(Math.random() * Math.floor(arr.length));
+  arr = shuffle(arr).slice(index);
+  return arr;
 }
 
 function generateDomElements(objArray) {
@@ -52,39 +45,42 @@ function generateDomElements(objArray) {
 
 function generateArray() {
   var objArray = [];
-  var title = 'title ' + i;
-  var address = '600, 350';
-  var price = 0;
-  var rooms = 0;
-  var guests = 0;
-  var locationX = [];
-  var locationY = [];
-  var description = 'description';
+  var TITLE = 'title ' + i;
+  var ADDRESS = '600, 350';
+  var PRICE = 0;
+  var TYPE = ['palace', 'flat', 'house', 'bungalo'];
+  var ROOMS = 0;
+  var GUESTS = 0;
+  var CHECKIN = ['12:00', '13:00', '14:00'];
+  var CHECKOUT = ['12:00', '13:00', '14:00'];
+  var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+  var DESCRIPTION = 'description';
+  var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+  var LOCATIONX = [0, 1150];
+  var LOCATIONY = [130, 630];
   for (var i = 1; i < 9; i++) {
     var obj = {
       'author': {
         'avatar': './img/avatars/user0' + i + '.png'
       },
       'offer': {
-        'title': title,
-        'address': address,
-        'price': price,
-        'type': randomArrElement('palace', 'flat', 'house', 'bungalo'),
-        'rooms': rooms,
-        'guests': guests,
-        'checkin': randomArrElement('12:00', '13:00', '14:00'),
-        'checkout': randomArrElement('12:00', '13:00', '14:00'),
-        'features': randomArr('wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'),
-        'description': description,
-        'photos': randomArr('http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg')
+        'title': TITLE,
+        'address': ADDRESS,
+        'price': PRICE,
+        'type': randomArrElement(TYPE),
+        'rooms': ROOMS,
+        'guests': GUESTS,
+        'checkin': randomArrElement(CHECKIN),
+        'checkout': randomArrElement(CHECKOUT),
+        'features': randomArr(FEATURES),
+        'description': DESCRIPTION,
+        'photos': randomArr(PHOTOS)
       },
       'location': {
-        'x': getRandomNumber(0, 1150),
-        'y': getRandomNumber(130, 630)
+        'x': getRandomNumber(LOCATIONX[0], LOCATIONX[1]),
+        'y': getRandomNumber(LOCATIONY[0], LOCATIONY[1]),
       }
     };
-    locationX.push(obj.location.x);
-    locationY.push(obj.location.y);
     objArray.push(obj);
   }
   generateDomElements(objArray);
