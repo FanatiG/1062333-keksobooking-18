@@ -25,7 +25,6 @@ var houseTypes = {
   }
 };
 var ROOMS = [1, 2, 3, 100];
-var GUESTS = ['для 1 гостя', 'для 2 гостей', 'для 3 гостей', 'не для гостей'];
 var CHECKIN = ['12:00', '13:00', '14:00'];
 var CHECKOUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
@@ -34,6 +33,10 @@ var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.g
 var LOCATION_X = [0, 1150];
 var LOCATION_Y = [130, 630];
 var pin = document.querySelector('#pin').content.querySelector('.map__pin');
+
+function activateMap() {
+  document.getElementsByClassName('map')[0].classList.remove('map--faded');
+}
 
 function getRandomNumber(min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -56,33 +59,13 @@ function shuffle(arr) {
   return arr;
 }
 
-function getRandomArr(arr) { // точно нужно убрать var result = arr; и слайсить напрямую?
+function getRandomArr(arr) {
   return shuffle(arr.slice(Math.floor(Math.random() * Math.floor(arr.length))));
-}
-
-function getGuestsNumber(roomsNumber) {
-  var guestsDescription;
-  switch (roomsNumber) {
-    case 1:
-      guestsDescription = GUESTS[0];
-      break;
-    case 2:
-      guestsDescription = GUESTS[0] + ' ' + GUESTS[1];
-      break;
-    case 3:
-      guestsDescription = GUESTS[0] + ' ' + GUESTS[1] + ' ' + GUESTS[2];
-      break;
-    case 100:
-      guestsDescription = GUESTS[3];
-      break;
-  }
-  return guestsDescription;
 }
 
 function getPriceValue(type) {
   return getRandomNumber(houseTypes[type]['min'], houseTypes[type]['max']);
 }
-
 
 function createPin(pinsList, i) {
   var pinClone = pin.cloneNode(true);
@@ -95,7 +78,6 @@ function createPin(pinsList, i) {
 
 function renderPinsOnMap(pinsList) {
   var fragment = document.createDocumentFragment();
-  document.getElementsByClassName('map')[0].classList.remove('map--faded'); //  эта строка нужна, чтобы перевести карту в "активное" состояние
   for (var i = 0; i < PINS_AMOUNT; i++) {
     fragment.appendChild(createPin(pinsList, i));
   }
@@ -106,7 +88,7 @@ function generatePinData() {
   var pinsList = [];
   for (var i = 1; i < PINS_AMOUNT + 1; i++) {
     var roomsAmount = getRandomArrElement(ROOMS);
-    var guestsAmount = getGuestsNumber(roomsAmount, GUESTS);
+    var guestsAmount = getRandomNumber(1, 100);
     var roomType = getRandomArrElement(Object.keys(houseTypes));
     var roomPrice = getPriceValue(roomType);
     var pinCoordX = getRandomNumber(LOCATION_X[0], LOCATION_X[1]);
@@ -136,6 +118,7 @@ function generatePinData() {
     };
     pinsList.push(obj);
   }
+  activateMap();
   renderPinsOnMap(pinsList);
 }
 generatePinData();
