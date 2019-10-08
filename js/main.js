@@ -24,6 +24,21 @@ var houseTypes = {
     max: 1000000
   }
 };
+var translate = {
+  bungalo: {
+    rusName: 'Бунгало'
+  },
+  flat: {
+    rusName: 'Квартира'
+  },
+  house: {
+    rusName: 'Дом'
+  },
+  palace: {
+    rusName: 'Дворец'
+  }
+};
+
 var ROOMS = [1, 2, 3, 100];
 var CHECKIN_TIMES = ['12:00', '13:00', '14:00'];
 var CHECKOUT_TIMES = ['12:00', '13:00', '14:00'];
@@ -33,6 +48,7 @@ var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.g
 var LOCATION_X = [0, 1150];
 var LOCATION_Y = [130, 630];
 var pin = document.querySelector('#pin').content.querySelector('.map__pin');
+var popup = document.querySelector('#card').content.querySelector('.map__card').cloneNode(true);
 
 function activateMap() {
   document.getElementsByClassName('map')[0].classList.remove('map--faded');
@@ -120,5 +136,51 @@ function generatePinData() {
   }
   return pinsList;
 }
+
+function renderPopup(pinsList) {
+  var fragment = document.createDocumentFragment();
+
+  popup.querySelector('.popup__title').textContent = pinsList.offer.title;
+
+  popup.querySelector('.popup__text--address').textContent = pinsList.offer.address;
+
+  popup.querySelector('.popup__text--price').textContent = pinsList.offer.price + '₽/ночь';
+
+  popup.querySelector('.popup__type').textContent = translate[pinsList.offer.type]['rusName'];
+
+  popup.querySelector('.popup__text--capacity').textContent = pinsList.offer.rooms + ' комнат(ы) для ' + pinsList.offer.guests + ' гостя(ей)';
+
+  popup.querySelector('.popup__text--time').textContent = 'Заезд после ' + pinsList.offer.checkin + ', выезд после ' + pinsList.offer.checkout;
+
+  var feature = popup.querySelector('.popup__features').querySelector('.popup__feature');
+  while (popup.querySelector('.popup__features').firstChild) {
+    popup.querySelector('.popup__features').removeChild(popup.querySelector('.popup__features').firstChild);
+  }
+  for (var i = 0; i < pinsList.offer.features.length; i++) {
+    var featureClone = feature.cloneNode(true);
+    featureClone.classList.value = 'popup__feature popup__feature--' + pinsList.offer.features[i];
+    popup.querySelector('.popup__features').appendChild(featureClone);
+  }
+
+  popup.querySelector('.popup__description').textContent = pinsList.offer.description;
+
+  var photo = popup.querySelector('.popup__photos').querySelector('.popup__photo');
+  while (popup.querySelector('.popup__photos').firstChild) {
+    popup.querySelector('.popup__photos').removeChild(popup.querySelector('.popup__photos').firstChild);
+  }
+  for (i = 0; i < pinsList.offer.photos.length; i++) {
+    var photoClone = photo.cloneNode(true);
+    photoClone.src = pinsList.offer.photos[i];
+    popup.querySelector('.popup__photos').appendChild(photoClone);
+  }
+
+  popup.querySelector('.popup__avatar').src = pinsList.author.avatar;
+
+  fragment.appendChild(popup);
+  return fragment;
+}
+
+var pins = generatePinData();
 activateMap();
-renderPinsOnMap(generatePinData());
+renderPinsOnMap(pins);
+document.querySelector('.map').insertBefore(renderPopup(pins[0]), document.querySelector('.map__filters-container'));
