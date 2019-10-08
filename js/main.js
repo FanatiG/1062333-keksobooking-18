@@ -38,6 +38,7 @@ var translate = {
     rusName: 'Дворец'
   }
 };
+
 var ROOMS = [1, 2, 3, 100];
 var CHECKIN_TIMES = ['12:00', '13:00', '14:00'];
 var CHECKOUT_TIMES = ['12:00', '13:00', '14:00'];
@@ -76,6 +77,19 @@ function shuffle(arr) {
 
 function getRandomArr(arr) {
   return shuffle(arr.slice(Math.floor(Math.random() * Math.floor(arr.length))));
+}
+
+function getPriceValue(type) {
+  return getRandomNumber(houseTypes[type]['min'], houseTypes[type]['max']);
+}
+
+function createPin(pinsList) {
+  var pinClone = pin.cloneNode(true);
+  pinClone.style.left = pinsList.location.x + 'px';
+  pinClone.style.top = pinsList.location.y + 'px';
+  pinClone.querySelector('img').src = pinsList.author.avatar;
+  pinClone.querySelector('img').alt = pinsList.offer.title;
+  return pinClone;
 }
 
 function getPriceValue(type) {
@@ -132,7 +146,6 @@ function generatePinData() {
       }
     };
     pinsList.push(obj);
-  }
   return pinsList;
 }
 
