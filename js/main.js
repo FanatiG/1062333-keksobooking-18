@@ -179,6 +179,7 @@ function renderPopup(pinsList) {
   return fragment;
 }
 
+var pins = generatePinData();
 activateMap();
-renderPinsOnMap(generatePinData());
-document.querySelector('.map').insertBefore(renderPopup(generatePinData()[0]), document.querySelector('.map__filters-container'));
+renderPinsOnMap(pins);
+document.querySelector('.map').insertBefore(renderPopup(pins[0]), document.querySelector('.map__filters-container'));
