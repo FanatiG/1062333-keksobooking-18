@@ -92,19 +92,6 @@ function createPin(pinsList) {
   return pinClone;
 }
 
-function getPriceValue(type) {
-  return getRandomNumber(houseTypes[type]['min'], houseTypes[type]['max']);
-}
-
-function createPin(pinsList) {
-  var pinClone = pin.cloneNode(true);
-  pinClone.style.left = pinsList.location.x + 'px';
-  pinClone.style.top = pinsList.location.y + 'px';
-  pinClone.querySelector('img').src = pinsList.author.avatar;
-  pinClone.querySelector('img').alt = pinsList.offer.title;
-  return pinClone;
-}
-
 function renderPinsOnMap(pinsList) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < PINS_AMOUNT; i++) {
@@ -146,6 +133,7 @@ function generatePinData() {
       }
     };
     pinsList.push(obj);
+  }
   return pinsList;
 }
 
