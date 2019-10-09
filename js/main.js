@@ -49,6 +49,7 @@ var LOCATION_X = [0, 1150];
 var LOCATION_Y = [130, 630];
 var pin = document.querySelector('#pin').content.querySelector('.map__pin');
 var popup = document.querySelector('#card').content.querySelector('.map__card').cloneNode(true);
+var MAIN_PIN = document.querySelector('.map__pin--main');
 var PINLEGHEIGHT = 22;
 
 function activateMap() {
@@ -184,19 +185,20 @@ function renderPopup(pinsList) {
 for (var i = 0; i < document.querySelector('.ad-form').querySelectorAll('fieldset').length; i++) {
   document.querySelector('.ad-form').querySelectorAll('fieldset')[i].disabled = true;
 }
-document.querySelector('.map__pin--main').addEventListener('mousedown', mainPinMouseDown);
-document.querySelector('.map__pin--main').addEventListener('keydown', mainPinEnterDown);
-document.getElementById('address').value = Math.floor(document.querySelector('.map__pin--main').offsetLeft + (document.querySelector('.map__pin--main').querySelector('img').offsetWidth / 2)) + ', ' + Math.floor(document.querySelector('.map__pin--main').offsetTop + (document.querySelector('.map__pin--main').querySelector('img').offsetHeight / 2));
+MAIN_PIN.addEventListener('mousedown', mainPinMouseDown);
+MAIN_PIN.addEventListener('keydown', mainPinEnterDown);
+document.getElementById('address').value = Math.floor(MAIN_PIN.offsetLeft + (MAIN_PIN.querySelector('img').offsetWidth / 2)) + ', ' + Math.floor(MAIN_PIN.offsetTop + (MAIN_PIN.querySelector('img').offsetHeight / 2));
 
 function activatePage() {
-  document.querySelector('.map__pin--main').removeEventListener('mousedown', mainPinMouseDown);
-  document.querySelector('.map__pin--main').removeEventListener('keydown', mainPinEnterDown);
+  MAIN_PIN.removeEventListener('mousedown', mainPinMouseDown);
+  MAIN_PIN.removeEventListener('keydown', mainPinEnterDown);
   for (i = 0; i < document.querySelector('.ad-form').querySelectorAll('fieldset').length; i++) {
     document.querySelector('.ad-form').querySelectorAll('fieldset')[i].disabled = false;
   }
-  document.getElementById('address').value = Math.floor(document.querySelector('.map__pin--main').offsetLeft + (document.querySelector('.map__pin--main').querySelector('img').offsetWidth / 2)) + ', ' + Math.floor(document.querySelector('.map__pin--main').offsetTop + (document.querySelector('.map__pin--main').querySelector('img').offsetHeight + PINLEGHEIGHT));
+  document.getElementById('address').value = Math.floor(MAIN_PIN.offsetLeft + (MAIN_PIN.querySelector('img').offsetWidth / 2)) + ', ' + Math.floor(MAIN_PIN.offsetTop + (MAIN_PIN.querySelector('img').offsetHeight + PINLEGHEIGHT));
   var pins = generatePinData();
   activateMap();
+  checkGuestsValue();
   renderPinsOnMap(pins);
   document.querySelector('.map').insertBefore(renderPopup(pins[0]), document.querySelector('.map__filters-container'));
 }
@@ -208,5 +210,19 @@ function mainPinMouseDown() {
 function mainPinEnterDown(evt) {
   if (evt.keyCode === 13) {
     activatePage();
+  }
+}
+
+var roomsNumber = document.querySelector('#room_number');
+roomsNumber.addEventListener('change', checkGuestsValue);
+var guestsNumber = document.querySelector('#capacity');
+guestsNumber.addEventListener('change', checkGuestsValue);
+
+function checkGuestsValue() {
+  if (guestsNumber.value !== roomsNumber.value) {
+    guestsNumber.setCustomValidity('must be 1');
+  } else {
+    guestsNumber.setCustomValidity(''); // be sure to leave this empty!
+    console.log('Correct!');
   }
 }
