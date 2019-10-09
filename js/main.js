@@ -187,6 +187,7 @@ function setAddressValue(pinLegHeight) {
   var addressValue = pinLegHeight ? Math.floor(mainPin.offsetLeft + (mainPin.querySelector('img').offsetWidth / 2)) + ', ' + Math.floor(mainPin.offsetTop + (mainPin.querySelector('img').offsetHeight + PINLEGHEIGHT)) : Math.floor(mainPin.offsetLeft + (mainPin.querySelector('img').offsetWidth / 2)) + ', ' + Math.floor(mainPin.offsetTop + (mainPin.querySelector('img').offsetHeight / 2));
   document.getElementById('address').value = addressValue;
 }
+
 function enableDisableMenu(bool) {
   for (var i = 0; i < document.querySelector('.ad-form').querySelectorAll('fieldset').length; i++) {
     document.querySelector('.ad-form').querySelectorAll('fieldset')[i].disabled = bool;
@@ -225,11 +226,17 @@ roomsNumber.addEventListener('change', checkGuestsValue);
 var guestsNumber = document.querySelector('#capacity');
 guestsNumber.addEventListener('change', checkGuestsValue);
 
+
 function checkGuestsValue() {
-  if (guestsNumber.value !== roomsNumber.value) {
-    guestsNumber.setCustomValidity('must be 1');
+  if (parseInt(roomsNumber.value, 10) === 100 && parseInt(guestsNumber.value, 10) === 0) {
+    console.log('Correct');
   } else {
-    guestsNumber.setCustomValidity(''); // be sure to leave this empty!
-    console.log('Correct!');
+    if (parseInt(roomsNumber.value, 10) !== 100 && parseInt(guestsNumber.value, 10) <= parseInt(roomsNumber.value, 10)) {
+      guestsNumber.setCustomValidity('');
+      console.log('Correct!');
+    } else {
+      guestsNumber.setCustomValidity('Must be ' + guestsNumber.value + ' or less');
+      console.log('Incorrect!');
+    }
   }
 }
