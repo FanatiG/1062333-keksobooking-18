@@ -49,8 +49,8 @@ var LOCATION_X = [0, 1150];
 var LOCATION_Y = [130, 630];
 var pin = document.querySelector('#pin').content.querySelector('.map__pin');
 var popup = document.querySelector('#card').content.querySelector('.map__card').cloneNode(true);
-var MAIN_PIN = document.querySelector('.map__pin--main');
 var PINLEGHEIGHT = 22;
+var mainPin = document.querySelector('.map__pin--main');
 
 function activateMap() {
   document.getElementsByClassName('map')[0].classList.remove('map--faded');
@@ -182,20 +182,27 @@ function renderPopup(pinsList) {
   return fragment;
 }
 
-for (var i = 0; i < document.querySelector('.ad-form').querySelectorAll('fieldset').length; i++) {
-  document.querySelector('.ad-form').querySelectorAll('fieldset')[i].disabled = true;
+
+function setAddressValue(pinLegHeight) {
+  var addressValue = pinLegHeight ? Math.floor(mainPin.offsetLeft + (mainPin.querySelector('img').offsetWidth / 2)) + ', ' + Math.floor(mainPin.offsetTop + (mainPin.querySelector('img').offsetHeight + PINLEGHEIGHT)) : Math.floor(mainPin.offsetLeft + (mainPin.querySelector('img').offsetWidth / 2)) + ', ' + Math.floor(mainPin.offsetTop + (mainPin.querySelector('img').offsetHeight / 2));
+  document.getElementById('address').value = addressValue;
 }
-MAIN_PIN.addEventListener('mousedown', mainPinMouseDown);
-MAIN_PIN.addEventListener('keydown', mainPinEnterDown);
-document.getElementById('address').value = Math.floor(MAIN_PIN.offsetLeft + (MAIN_PIN.querySelector('img').offsetWidth / 2)) + ', ' + Math.floor(MAIN_PIN.offsetTop + (MAIN_PIN.querySelector('img').offsetHeight / 2));
+function enableDisableMenu(bool) {
+  for (var i = 0; i < document.querySelector('.ad-form').querySelectorAll('fieldset').length; i++) {
+    document.querySelector('.ad-form').querySelectorAll('fieldset')[i].disabled = bool;
+  }
+}
+
+enableDisableMenu(true);
+mainPin.addEventListener('mousedown', mainPinMouseDown);
+mainPin.addEventListener('keydown', mainPinEnterDown);
+setAddressValue();
 
 function activatePage() {
-  MAIN_PIN.removeEventListener('mousedown', mainPinMouseDown);
-  MAIN_PIN.removeEventListener('keydown', mainPinEnterDown);
-  for (i = 0; i < document.querySelector('.ad-form').querySelectorAll('fieldset').length; i++) {
-    document.querySelector('.ad-form').querySelectorAll('fieldset')[i].disabled = false;
-  }
-  document.getElementById('address').value = Math.floor(MAIN_PIN.offsetLeft + (MAIN_PIN.querySelector('img').offsetWidth / 2)) + ', ' + Math.floor(MAIN_PIN.offsetTop + (MAIN_PIN.querySelector('img').offsetHeight + PINLEGHEIGHT));
+  mainPin.removeEventListener('mousedown', mainPinMouseDown);
+  mainPin.removeEventListener('keydown', mainPinEnterDown);
+  enableDisableMenu(false);
+  setAddressValue(PINLEGHEIGHT);
   var pins = generatePinData();
   activateMap();
   checkGuestsValue();
