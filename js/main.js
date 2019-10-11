@@ -95,7 +95,6 @@ function createPin(pinsList) {
   pinClone.querySelector('img').alt = pinsList.offer.title;
   return pinClone;
 }
-
 function renderPinsOnMap(pinsList) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < PINS_AMOUNT; i++) {
@@ -250,3 +249,8 @@ function checkGuestsValue() {
     guestsNumber.setCustomValidity('Значение "Количество мест" должно быть ' + roomNumber.value + ' или меньше');
   }
 }
+
+var pins = generatePinData();
+activateMap();
+renderPinsOnMap(pins);
+document.querySelector('.map').insertBefore(renderPopup(pins[0]), document.querySelector('.map__filters-container'));
