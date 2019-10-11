@@ -247,6 +247,6 @@ function checkGuestsValue() {
   } else if (roomNumber === 100 && guestNumber !== 0) {
     guestsNumber.setCustomValidity('Значение "Количество мест" должно быть ' + guestsNumber[3].textContent);
   } else {
-    guestsNumber.setCustomValidity('Значение "Количество мест" должно быть ' + roomNumber.value + ' или меньше');
+    guestsNumber.setCustomValidity('Значение "Количество мест" должно быть ' + roomNumber + ' или меньше');
   }
 }
