@@ -49,6 +49,10 @@ var LOCATION_X = [0, 1150];
 var LOCATION_Y = [130, 630];
 var pin = document.querySelector('#pin').content.querySelector('.map__pin');
 var popup = document.querySelector('#card').content.querySelector('.map__card').cloneNode(true);
+var PIN_LEG_HEIGHT = 22;
+var mainPin = document.querySelector('.map__pin--main');
+var ADDRESS_INPUT = document.getElementById('address');
+var MENU_FIELDSET = document.querySelector('.ad-form').querySelectorAll('fieldset');
 
 function activateMap() {
   document.getElementsByClassName('map')[0].classList.remove('map--faded');
@@ -180,7 +184,69 @@ function renderPopup(pinsList) {
   return fragment;
 }
 
-var pins = generatePinData();
-activateMap();
-renderPinsOnMap(pins);
-document.querySelector('.map').insertBefore(renderPopup(pins[0]), document.querySelector('.map__filters-container'));
+
+function setAddressValue(pinLegHeight) {
+  var mainPinOffsetTop = mainPin.offsetTop;
+  var mainPinOffsetLeft = mainPin.offsetLeft;
+  var pinHorizontalCoordinates = Math.floor(mainPinOffsetLeft + (mainPin.querySelector('img').offsetWidth / 2));
+  var inactivePinVerticalCoordinates = Math.floor(mainPinOffsetTop + mainPin.querySelector('img').offsetHeight + pinLegHeight);
+  var activePinVerticalCoordinates = Math.floor(mainPin.offsetTop + mainPin.querySelector('img').offsetHeight / 2);
+  var inactivePin = pinHorizontalCoordinates + ', ' + inactivePinVerticalCoordinates;
+  var activePin = pinHorizontalCoordinates + ', ' + activePinVerticalCoordinates;
+  var addressValue = pinLegHeight ? inactivePin : activePin;
+  ADDRESS_INPUT.value = addressValue;
+}
+
+function toggleAvailability(selector, status) {
+  for (var i = 0; i < selector.length; i++) {
+    selector[i].disabled = status;
+  }
+}
+
+toggleAvailability(MENU_FIELDSET, true);
+mainPin.addEventListener('mousedown', mainPinMouseDown);
+mainPin.addEventListener('keydown', mainPinEnterDown);
+setAddressValue();
+
+function activatePage() {
+  document.querySelector('.notice').querySelector('.ad-form--disabled').classList.remove('ad-form--disabled');
+  mainPin.removeEventListener('mousedown', mainPinMouseDown);
+  mainPin.removeEventListener('keydown', mainPinEnterDown);
+  toggleAvailability(MENU_FIELDSET, false);
+  setAddressValue(PIN_LEG_HEIGHT);
+  var pins = generatePinData();
+  activateMap();
+  checkGuestsValue();
+  renderPinsOnMap(pins);
+  document.querySelector('.map').insertBefore(renderPopup(pins[0]), document.querySelector('.map__filters-container'));
+}
+
+function mainPinMouseDown() {
+  activatePage();
+}
+
+function mainPinEnterDown(evt) {
+  if (evt.keyCode === 13) {
+    activatePage();
+  }
+}
+
+var roomsNumber = document.querySelector('#room_number');
+roomsNumber.addEventListener('change', checkGuestsValue);
+var guestsNumber = document.querySelector('#capacity');
+guestsNumber.addEventListener('change', checkGuestsValue);
+
+
+function checkGuestsValue() {
+  var roomNumber = parseInt(roomsNumber.value, 10);
+  var guestNumber = parseInt(guestsNumber.value, 10);
+  if (roomNumber === 100 && guestNumber === 0) {
+    guestsNumber.setCustomValidity('');
+  } else if (roomNumber !== 100 && guestNumber <= roomNumber) {
+    guestsNumber.setCustomValidity('');
+  } else if (roomNumber === 100 && guestNumber !== 0) {
+    guestsNumber.setCustomValidity('Значение "Количество мест" должно быть ' + guestsNumber[3].textContent);
+  } else {
+    guestsNumber.setCustomValidity('Значение "Количество мест" должно быть ' + roomNumber + ' или меньше');
+  }
+}
