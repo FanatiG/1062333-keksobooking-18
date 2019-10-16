@@ -232,7 +232,7 @@ function mainPinEnterDown(evt) {
   }
 }
 
-function checkGuestsValue() {
+function guestsChangeHandler() {
   var roomNumber = parseInt(roomsNumberElement.value, 10);
   var guestNumber = parseInt(guestsNumberElement.value, 10);
   if (roomNumber === 100 && guestNumber === 0) {
@@ -255,7 +255,7 @@ function addPopupOnPins() {
 }
 
 function popupIntercation() {
-  document.querySelector('.map__card').style.visibility = 'hidden';
+  document.querySelector('.map__card').classList.add('hidden');
   setAddressValue(PIN_LEG_HEIGHT);
 }
 
@@ -270,14 +270,10 @@ function popupCloseButton(evt) {
 }
 
 function openPopup() {
-  var pinNumber = 0;
-  if (event.target instanceof Image) {
-    pinNumber = event.target.dataset.id;
-  } else {
-    pinNumber = event.target.querySelector('img').dataset.id;
-  }
+  var pinImage = event.target instanceof Image ? event.target : event.target.querySelector('img');
+  var pinNumber = pinImage.dataset.id || 0;
   mapElement.insertBefore(renderPopup(pins[pinNumber]), mapContainerElement);
-  document.querySelector('.map__card').style.visibility = 'visible';
+  document.querySelector('.map__card').classList.remove('hidden');
   document.querySelector('.popup__close').addEventListener('mousedown', popupCloseMouse);
   document.addEventListener('keydown', popupCloseButton);
 }
@@ -292,20 +288,20 @@ function pinEnterDown(evt) {
   }
 }
 
-function timeIn() {
+function timeInChangeHandler() {
   if (timeInHtmlElement.value !== timeOutHtmlElement.value) {
     timeOutHtmlElement.value = timeInHtmlElement.value;
   }
 }
 
-function timeOut() {
+function timeOutChangeHandler() {
   if (timeOutHtmlElement.value !== timeInHtmlElement.value) {
     timeInHtmlElement.value = timeOutHtmlElement.value;
   }
 }
 
 
-function titleFunction() {
+function titleChangeHandler() {
   if (titleHtmlElement.value.length > MAX_TITLE_LENGTH || titleHtmlElement.value.length < MIN_TITLE_LENGTH) {
     titleHtmlElement.setCustomValidity('Заголовок должен содержать от 30 до 100 символов!');
   } else {
@@ -313,7 +309,7 @@ function titleFunction() {
   }
 }
 
-function getBuildingValue() {
+function getPrices() {
   var minPriceValue = houseTypes[typeValue.value].min;
   var maxPriceValue = houseTypes[typeValue.value].max;
   return {
@@ -322,18 +318,18 @@ function getBuildingValue() {
   };
 }
 
-function priceFunction() {
+function priceChangeHandler() {
   var priceValue = priceHtmlElement.value;
-  if (priceValue < getBuildingValue()['min'] || priceValue > getBuildingValue()['max']) {
-    priceHtmlElement.setCustomValidity('Цена должна быть от ' + getBuildingValue()['min'] + ' и до ' + getBuildingValue()['max']);
+  if (priceValue < getPrices()['min'] || priceValue > getPrices()['max']) {
+    priceHtmlElement.setCustomValidity('Цена должна быть от ' + getPrices()['min'] + ' и до ' + getPrices()['max']);
   } else {
     priceHtmlElement.setCustomValidity('');
   }
 }
 
-function typeFunction() {
-  priceFunction();
-  priceHtmlElement.placeholder = getBuildingValue()['min'];
+function typeChangeHandler() {
+  priceChangeHandler();
+  priceHtmlElement.placeholder = getPrices()['min'];
 }
 
 document.onload = function () {
@@ -341,19 +337,16 @@ document.onload = function () {
   mainPinElement.addEventListener('mousedown', mainPinMouseDown);
   mainPinElement.addEventListener('keydown', mainPinEnterDown);
   setAddressValue();
-  typeFunction();
-  addressInputElement.readOnly = true;
-  titleHtmlElement.setAttribute('required', '');
-  priceHtmlElement.setAttribute('required', '');
+  typeChangeHandler();
 }();
 
 function validation() {
-  checkGuestsValue();
-  titleHtmlElement.addEventListener('input', titleFunction);
-  priceHtmlElement.addEventListener('input', priceFunction);
-  typeHtmlElement.addEventListener('change', typeFunction);
-  timeInHtmlElement.addEventListener('change', timeIn);
-  timeOutHtmlElement.addEventListener('change', timeOut);
-  guestsNumberElement.addEventListener('change', checkGuestsValue);
-  roomsNumberElement.addEventListener('change', checkGuestsValue);
+  guestsChangeHandler();
+  titleHtmlElement.addEventListener('input', titleChangeHandler);
+  priceHtmlElement.addEventListener('input', priceChangeHandler);
+  typeHtmlElement.addEventListener('change', typeChangeHandler);
+  timeInHtmlElement.addEventListener('change', timeInChangeHandler);
+  timeOutHtmlElement.addEventListener('change', timeOutChangeHandler);
+  guestsNumberElement.addEventListener('change', guestsChangeHandler);
+  roomsNumberElement.addEventListener('change', guestsChangeHandler);
 }
