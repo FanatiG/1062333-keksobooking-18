@@ -1,10 +1,4 @@
 // модуль, который работает с формой объявления
-/*
-menuFieldsetElementList
-houseTypes
-setAddressValue
-toggleAvailability
-*/
 'use strict';
 (function () {
   var typeValue = document.querySelector('#type');
@@ -93,17 +87,7 @@ toggleAvailability
     guestsNumberElement.addEventListener('change', guestsChangeHandler);
     roomsNumberElement.addEventListener('change', guestsChangeHandler);
   }
-  window.data = {
-    validation: validation,
-    openPopup: window.data.openPopup,
-    pins: window.data.pins, // map, pin
-    PIN_LEG_HEIGHT: window.data.PIN_LEG_HEIGHT, // map, pin
-    setAddressValue: window.data.setAddressValue, // map, pin, form
-    mainPinElement: window.data.mainPinElement, // pin
-    PINS_AMOUNT: window.data.PINS_AMOUNT, // pin
-    activateMap: window.data.activateMap, // pin
-    menuFieldsetElementList: window.data.menuFieldsetElementList, // pin, form
-    toggleAvailability: window.data.toggleAvailability, // pin, form
-    houseTypes: window.data.houseTypes // form
+  window.form = {
+    validation: validation
   };
 })();

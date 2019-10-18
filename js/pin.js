@@ -1,14 +1,4 @@
 // модуль, который отвечает за создание пина — метки на карте
-/*
-pins
-PIN_LEG_HEIGHT
-menuFieldsetElementList
-mainPinElement
-PINS_AMOUNT
-setAddressValue
-toggleAvailability
-activateMap
-*/
 'use strict';
 (function () {
   var formHtmlClassList = document.querySelector('.notice').querySelector('.ad-form--disabled').classList;
@@ -54,12 +44,12 @@ activateMap
   }
 
   function pinMouseDown() {
-    window.data.openPopup();
+    window.map.openPopup();
   }
 
   function pinEnterDown(evt) {
     if (evt.keyCode === ENTER_KEY_CODE) {
-      window.data.openPopup();
+      window.map.openPopup();
     }
   }
 
@@ -76,6 +66,6 @@ activateMap
     window.data.activateMap();
     renderPinsOnMap(window.data.pins);
     addPopupOnPins();
-    window.data.validation();
+    window.form.validation();
   }
 })();

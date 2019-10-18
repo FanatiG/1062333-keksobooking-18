@@ -1,12 +1,6 @@
 // модуль, который управляет карточками объявлений и пинами: добавляет на страницу нужную карточку, отрисовывает пины и осуществляет взаимодействие карточки и метки на карте
-/*
-pins
-PIN_LEG_HEIGHT
-setAddressValue
-*/
 'use strict';
 (function () {
-  // console.log(window.data.pins);
   var ESC_KEY_CODE = 27;
   var mapElement = document.querySelector('.map');
   var mapContainerElement = document.querySelector('.map__filters-container');
@@ -81,16 +75,7 @@ setAddressValue
     fragment.appendChild(popup);
     return fragment;
   }
-  window.data = {
-    openPopup: openPopup,
-    pins: window.data.pins, // map, pin
-    PIN_LEG_HEIGHT: window.data.PIN_LEG_HEIGHT, // map, pin
-    setAddressValue: window.data.setAddressValue, // map, pin, form
-    mainPinElement: window.data.mainPinElement, // pin
-    PINS_AMOUNT: window.data.PINS_AMOUNT, // pin
-    activateMap: window.data.activateMap, // pin
-    menuFieldsetElementList: window.data.menuFieldsetElementList, // pin, form
-    toggleAvailability: window.data.toggleAvailability, // pin, form
-    houseTypes: window.data.houseTypes // form
+  window.map = {
+    openPopup: openPopup
   };
 })();

@@ -104,7 +104,6 @@
         }
       };
       pinsList.push(obj);
-      // console.log(pinsList);
     }
     return pinsList;
   }
@@ -131,14 +130,14 @@
   }
 
   window.data = {
-    pins: pins, // map, pin
-    PIN_LEG_HEIGHT: PIN_LEG_HEIGHT, // map, pin
-    setAddressValue: setAddressValue, // map, pin, form
-    mainPinElement: mainPinElement, // pin
-    PINS_AMOUNT: PINS_AMOUNT, // pin
-    activateMap: activateMap, // pin
-    menuFieldsetElementList: menuFieldsetElementList, // pin, form
-    toggleAvailability: toggleAvailability, // pin, form
-    houseTypes: houseTypes // form
+    pins: pins,
+    PIN_LEG_HEIGHT: PIN_LEG_HEIGHT,
+    setAddressValue: setAddressValue,
+    mainPinElement: mainPinElement,
+    PINS_AMOUNT: PINS_AMOUNT,
+    activateMap: activateMap,
+    menuFieldsetElementList: menuFieldsetElementList,
+    toggleAvailability: toggleAvailability,
+    houseTypes: houseTypes
   };
 })();
