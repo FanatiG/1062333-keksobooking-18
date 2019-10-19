@@ -22,6 +22,7 @@
 
   function popupIntercation() {
     document.querySelector('.map__card').classList.add('hidden');
+    document.querySelector('.map').removeChild(document.querySelector('.map__card'));
     window.data.setAddressValue(window.data.PIN_LEG_HEIGHT);
   }
 
@@ -38,7 +39,15 @@
   function openPopup() {
     var pinImage = event.target instanceof Image ? event.target : event.target.querySelector('img');
     var pinNumber = pinImage.dataset.id || 0;
-    mapElement.insertBefore(renderPopup(window.xhr.serverData[pinNumber]), mapContainerElement);
+    try {
+      mapElement.insertBefore(renderPopup(window.xhr.serverData[pinNumber]), mapContainerElement);
+    } catch (err) {
+      if (document.querySelector('.map__card')) {
+        document.querySelector('.map').removeChild(document.querySelector('.map__card'));
+      }
+      popup = document.querySelector('#card').content.querySelector('.map__card').cloneNode(true);
+      mapElement.insertBefore(renderPopup(window.xhr.serverData[pinNumber]), mapContainerElement);
+    }
     document.querySelector('.map__card').classList.remove('hidden');
     document.querySelector('.popup__close').addEventListener('mousedown', popupCloseMouse);
     document.addEventListener('keydown', popupCloseButton);
@@ -46,6 +55,7 @@
 
   function renderPopup(pinsList) {
     var fragment = document.createDocumentFragment();
+    popup.querySelector('.popup__description').textContent = pinsList.offer.description;
     popup.querySelector('.popup__title').textContent = pinsList.offer.title;
     popup.querySelector('.popup__text--address').textContent = pinsList.offer.address;
     popup.querySelector('.popup__text--price').textContent = pinsList.offer.price + '₽/ночь';
@@ -61,7 +71,6 @@
       featureClone.classList.value = 'popup__feature popup__feature--' + pinsList.offer.features[i];
       popup.querySelector('.popup__features').appendChild(featureClone);
     }
-    popup.querySelector('.popup__description').textContent = pinsList.offer.description;
     var photo = popup.querySelector('.popup__photos').querySelector('.popup__photo');
     while (popup.querySelector('.popup__photos').firstChild) {
       popup.querySelector('.popup__photos').removeChild(popup.querySelector('.popup__photos').firstChild);
