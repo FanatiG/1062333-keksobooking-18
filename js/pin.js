@@ -41,6 +41,10 @@
       y: evt.clientY
     };
     var mainPinMouseMove = function (moveEvt) {
+      var minCoordX = window.data.locationX[0];
+      var maxCoordX = window.data.locationX[1];
+      var minCoordY = window.data.locationY[0];
+      var maxCoordY = window.data.locationY[1];
       moveEvt.preventDefault();
       var shift = {
         x: startCoords.x - moveEvt.clientX,
@@ -52,17 +56,17 @@
       };
       mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
       mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
-      if (mainPin.style.left.slice(0, -2) < window.data.locationX[0]) {
-        mainPin.style.left = window.data.locationX[0] + 'px';
+      if (mainPin.style.left.slice(0, -2) < minCoordX) {
+        mainPin.style.left = minCoordX + 'px';
       }
-      if (mainPin.style.left.slice(0, -2) > window.data.locationX[1]) {
-        mainPin.style.left = window.data.locationX[1] + 'px';
+      if (mainPin.style.left.slice(0, -2) > maxCoordX) {
+        mainPin.style.left = maxCoordX + 'px';
       }
-      if (mainPin.style.top.slice(0, -2) < window.data.locationY[0]) {
-        mainPin.style.top = window.data.locationY[0] + 'px';
+      if (mainPin.style.top.slice(0, -2) < minCoordY) {
+        mainPin.style.top = minCoordY + 'px';
       }
-      if (mainPin.style.top.slice(0, -2) > window.data.locationY[1]) {
-        mainPin.style.top = window.data.locationY[1] + 'px';
+      if (mainPin.style.top.slice(0, -2) > maxCoordY) {
+        mainPin.style.top = maxCoordY + 'px';
       }
     };
     var mainPinMouseUp = function (upEvt) {
