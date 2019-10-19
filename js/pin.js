@@ -18,7 +18,7 @@
 
   function renderPinsOnMap(pinsList) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.data.PINS_AMOUNT; i++) {
+    for (var i = 0; i < window.xhr.serverData.length; i++) {
       fragment.appendChild(createPin(pinsList[i], i));
     }
     mapPinsElement.appendChild(fragment);
@@ -114,7 +114,7 @@
     window.data.toggleAvailability(window.data.menuFieldsetElementList, false);
     window.data.setAddressValue(window.data.PIN_LEG_HEIGHT);
     window.data.activateMap();
-    renderPinsOnMap(window.data.pins);
+    renderPinsOnMap(window.xhr.serverData);
     addPopupOnPins();
     window.form.validation();
   }

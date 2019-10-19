@@ -11,6 +11,28 @@
   var timeOutHtmlElement = document.querySelector('#timeout');
   var priceHtmlElement = document.querySelector('#price');
   var typeHtmlElement = document.querySelector('#type');
+  var houseTypes = {
+    bungalo: {
+      name: 'bungalo',
+      min: 0,
+      max: 1000000
+    },
+    flat: {
+      name: 'flat',
+      min: 1000,
+      max: 1000000
+    },
+    house: {
+      name: 'house',
+      min: 5000,
+      max: 1000000
+    },
+    palace: {
+      name: 'palace',
+      min: 10000,
+      max: 1000000
+    }
+  };
 
 
   function guestsChangeHandler() {
@@ -49,8 +71,8 @@
   }
 
   function getPrices() {
-    var minPriceValue = window.data.houseTypes[typeValue.value].min;
-    var maxPriceValue = window.data.houseTypes[typeValue.value].max;
+    var minPriceValue = houseTypes[typeValue.value].min;
+    var maxPriceValue = houseTypes[typeValue.value].max;
     return {
       min: minPriceValue,
       max: maxPriceValue

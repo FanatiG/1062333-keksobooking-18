@@ -38,7 +38,7 @@
   function openPopup() {
     var pinImage = event.target instanceof Image ? event.target : event.target.querySelector('img');
     var pinNumber = pinImage.dataset.id || 0;
-    mapElement.insertBefore(renderPopup(window.data.pins[pinNumber]), mapContainerElement);
+    mapElement.insertBefore(renderPopup(window.xhr.serverData[pinNumber]), mapContainerElement);
     document.querySelector('.map__card').classList.remove('hidden');
     document.querySelector('.popup__close').addEventListener('mousedown', popupCloseMouse);
     document.addEventListener('keydown', popupCloseButton);
