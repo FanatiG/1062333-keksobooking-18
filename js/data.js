@@ -26,8 +26,6 @@
       max: 1000000
     }
   };
-  var mainPinOffsetTop = mainPinElement.offsetTop;
-  var mainPinOffsetLeft = mainPinElement.offsetLeft;
   var mainPinAvatarElement = mainPinElement.querySelector('img');
   var addressInputElement = document.getElementById('address');
   var PINS_AMOUNT = 8;
@@ -38,7 +36,7 @@
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var DESCRIPTION = 'description';
   var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-  var LOCATION_X = [0, 1150];
+  var LOCATION_X = [0, 1135];
   var LOCATION_Y = [130, 630];
   var mapHtmlClassList = document.getElementsByClassName('map')[0].classList;
 
@@ -110,6 +108,8 @@
   var pins = generatePinData();
 
   function setAddressValue(pinLegHeight) {
+    var mainPinOffsetTop = mainPinElement.offsetTop;
+    var mainPinOffsetLeft = mainPinElement.offsetLeft;
     var pinHorizontalCoordinates = Math.floor(mainPinOffsetLeft + (mainPinAvatarElement.offsetWidth / 2));
     var inactivePinVerticalCoordinates = Math.floor(mainPinOffsetTop + mainPinAvatarElement.offsetHeight + pinLegHeight);
     var activePinVerticalCoordinates = Math.floor(mainPinElement.offsetTop + mainPinAvatarElement.offsetHeight / 2);
@@ -117,6 +117,7 @@
     var activePin = pinHorizontalCoordinates + ', ' + activePinVerticalCoordinates;
     var addressValue = pinLegHeight ? inactivePin : activePin;
     addressInputElement.value = addressValue;
+    return addressValue;
   }
 
   function toggleAvailability(selector, status) {
@@ -138,6 +139,8 @@
     activateMap: activateMap,
     menuFieldsetElementList: menuFieldsetElementList,
     toggleAvailability: toggleAvailability,
-    houseTypes: houseTypes
+    houseTypes: houseTypes,
+    locationX: LOCATION_X,
+    locationY: LOCATION_Y
   };
 })();
