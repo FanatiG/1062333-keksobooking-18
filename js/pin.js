@@ -25,6 +25,9 @@
   }
 
   function mainPinMouseDown(evt) {
+    // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // console.log(window.xhr.sendData);
+    // window.xhr.sendData();
     if (formHtmlClassList.contains('ad-form--disabled')) {
       activatePage();
     } else {
@@ -118,4 +121,7 @@
     addPopupOnPins();
     window.form.validation();
   }
+  window.pin = {
+    formHtmlClassList: formHtmlClassList
+  };
 })();

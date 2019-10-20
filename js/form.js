@@ -33,19 +33,47 @@
       max: 1000000
     }
   };
+  var submitButton = document.querySelector('.ad-form__submit');
 
+  function submitForm() {
+    submitButton.addEventListener('click', function (evt) {
+      evt.preventDefault();
+    });
+    if (!titleChangeHandler()) {
+      titleHtmlElement.style.border = 'solid #ff6d51';
+    } else if (!priceChangeHandler()) {
+      priceHtmlElement.style.border = 'solid #ff6d51';
+    } else if (!guestsChangeHandler()) {
+      guestsNumberElement.style.border = 'solid #ff6d51';
+    } else {
+      window.xhr.sendData();
+      window.data.mainPinElement.style.left = '570px';
+      window.data.mainPinElement.style.top = '375px';
+      window.data.mapHtmlClassList.add('map--faded');
+      window.pin.formHtmlClassList.add('ad-form--disabled');
+      document.querySelector('.ad-form').reset();
+      window.data.setAddressValue();
+      while (document.querySelector('.map__pin:not(.map__pin--main)')) {
+        document.querySelector('.map__pins').removeChild(document.querySelector('.map__pin:not(.map__pin--main)'));
+      }
+    }
+  }
 
   function guestsChangeHandler() {
     var roomNumber = parseInt(roomsNumberElement.value, 10);
     var guestNumber = parseInt(guestsNumberElement.value, 10);
     if (roomNumber === 100 && guestNumber === 0) {
       guestsNumberElement.setCustomValidity('');
+      return true;
     } else if (roomNumber !== 100 && guestNumber <= roomNumber) {
       guestsNumberElement.setCustomValidity('');
+      return true;
     } else if (roomNumber === 100 && guestNumber !== 0) {
       guestsNumberElement.setCustomValidity('Значение "Количество мест" должно быть ' + guestsNumberElement[3].textContent);
+      return false;
     } else {
       guestsNumberElement.setCustomValidity('Значение "Количество мест" должно быть ' + roomNumber + ' или меньше');
+      return false;
     }
   }
 
@@ -65,8 +93,10 @@
   function titleChangeHandler() {
     if (titleHtmlElement.value.length > MAX_TITLE_LENGTH || titleHtmlElement.value.length < MIN_TITLE_LENGTH) {
       titleHtmlElement.setCustomValidity('Заголовок должен содержать от 30 до 100 символов!');
+      return false;
     } else {
       titleHtmlElement.setCustomValidity('');
+      return true;
     }
   }
 
@@ -83,8 +113,10 @@
     var priceValue = priceHtmlElement.value;
     if (priceValue < getPrices()['min'] || priceValue > getPrices()['max']) {
       priceHtmlElement.setCustomValidity('Цена должна быть от ' + getPrices()['min'] + ' и до ' + getPrices()['max']);
+      return false;
     } else {
       priceHtmlElement.setCustomValidity('');
+      return true;
     }
   }
 
@@ -108,6 +140,7 @@
     timeOutHtmlElement.addEventListener('change', timeOutChangeHandler);
     guestsNumberElement.addEventListener('change', guestsChangeHandler);
     roomsNumberElement.addEventListener('change', guestsChangeHandler);
+    submitButton.addEventListener('mouseup', submitForm);
   }
   window.form = {
     validation: validation
