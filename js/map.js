@@ -89,6 +89,7 @@
     return fragment;
   }
   window.map = {
-    openPopup: openPopup
+    openPopup: openPopup,
+    ESC_KEY_CODE: ESC_KEY_CODE
   };
 })();

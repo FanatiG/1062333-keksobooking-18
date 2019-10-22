@@ -41,6 +41,7 @@
     menuFieldsetElementList: menuFieldsetElementList,
     toggleAvailability: toggleAvailability,
     locationX: LOCATION_X,
-    locationY: LOCATION_Y
+    locationY: LOCATION_Y,
+    mapHtmlClassList: mapHtmlClassList
   };
 })();

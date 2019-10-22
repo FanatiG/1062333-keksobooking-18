@@ -110,12 +110,17 @@
   }();
 
   function activatePage() {
-    formHtmlClassList.remove('ad-form--disabled');
-    window.data.toggleAvailability(window.data.menuFieldsetElementList, false);
-    window.data.setAddressValue(window.data.PIN_LEG_HEIGHT);
-    window.data.activateMap();
-    renderPinsOnMap(window.xhr.serverData);
-    addPopupOnPins();
-    window.form.validation();
+    if (window.xhr.serverData) {
+      formHtmlClassList.remove('ad-form--disabled');
+      window.data.toggleAvailability(window.data.menuFieldsetElementList, false);
+      window.data.setAddressValue(window.data.PIN_LEG_HEIGHT);
+      window.data.activateMap();
+      renderPinsOnMap(window.xhr.serverData);
+      addPopupOnPins();
+      window.form.validation();
+    }
   }
+  window.pin = {
+    formHtmlClassList: formHtmlClassList
+  };
 })();
