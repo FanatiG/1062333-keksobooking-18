@@ -4,7 +4,11 @@
   var formHtmlClassList = document.querySelector('.notice').querySelector('.ad-form--disabled').classList;
   var pin = document.querySelector('#pin').content.querySelector('.map__pin');
   var mapPinsElement = document.querySelector('.map__pins');
+  var mapFiltersElements = document.querySelector('.map__filters');
   var ENTER_KEY_CODE = 13;
+  var pinsAmount = 10;
+  var maxPinsAmount = 5;
+  var filtersList = {};
 
   function createPin(pinsList, i) {
     var pinClone = pin.cloneNode(true);
@@ -16,12 +20,123 @@
     return pinClone;
   }
 
-  function renderPinsOnMap(pinsList) {
+  function clearPinsFromMap() {
+    while (document.querySelector('.map__pin:not(.map__pin--main)')) {
+      mapPinsElement.removeChild(document.querySelector('.map__pin:not(.map__pin--main)'));
+    }
+  }
+
+  function removeExcessivePins() {
+    if (mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)').length > maxPinsAmount) {
+      while (mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)').length > maxPinsAmount) {
+        mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)')[mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)').length - 1].remove();
+      }
+    }
+  }
+
+  function renderPinsOnMap() {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < window.xhr.serverData.length; i++) {
-      fragment.appendChild(createPin(pinsList[i], i));
+      fragment.appendChild(createPin(window.xhr.serverData[i], i));
     }
     mapPinsElement.appendChild(fragment);
+    removeExcessivePins();
+  }
+
+  function renderFilteredPins(filter) {
+    clearPinsFromMap();
+    var fragment = document.createDocumentFragment();
+    for (var elem in filter) {
+      if (Object.prototype.hasOwnProperty.call(filter, elem)) {
+        if (elem === 'price') {
+          if (filter[elem].name === 'low') {
+            for (var i = 0; i < pinsAmount; i++) {
+              if (window.xhr.serverData[i].offer[elem] <= filter[elem].max) {
+                fragment.appendChild(createPin(window.xhr.serverData[i], i));
+              }
+            }
+          }
+          if (filter[elem].name === 'middle') {
+            for (i = 0; i < pinsAmount; i++) {
+              if (window.xhr.serverData[i].offer[elem] <= filter[elem].max && window.xhr.serverData[i].offer[elem] >= filter[elem].min) {
+                fragment.appendChild(createPin(window.xhr.serverData[i], i));
+              }
+            }
+
+          }
+          if (filter[elem].name === 'high') {
+            for (i = 0; i < pinsAmount; i++) {
+              if (window.xhr.serverData[i].offer[elem] >= filter[elem].min) {
+                fragment.appendChild(createPin(window.xhr.serverData[i], i));
+              }
+            }
+          }
+        }
+        if (filter[elem] !== 'any') {
+          clearPinsFromMap();
+          for (i = 0; i < pinsAmount; i++) {
+            if (window.xhr.serverData[i].offer[elem].toString() === filter[elem]) {
+              fragment.appendChild(createPin(window.xhr.serverData[i], i));
+            }
+          }
+        } else {
+          clearPinsFromMap();
+          renderPinsOnMap();
+        }
+      }
+    }
+    mapPinsElement.appendChild(fragment);
+    addPopupOnPins();
+    removeExcessivePins();
+  }
+
+  function addEventsOnFilters() {
+    mapFiltersElements.querySelector('#housing-type').addEventListener('change', filterPinsByType);
+    mapFiltersElements.querySelector('#housing-price').addEventListener('change', filterPinsByPrice);
+    mapFiltersElements.querySelector('#housing-rooms').addEventListener('change', filterPinsByRooms);
+    mapFiltersElements.querySelector('#housing-guests').addEventListener('change', filterPinsByGuests);
+  }
+
+
+  function filterPinsByType(trgt) {
+    filtersList[trgt.target.name.slice(8)] = trgt.target.value;
+    renderFilteredPins(filtersList);
+  }
+
+  function filterPinsByPrice(trgt) {
+    if (trgt.target.value === 'low') {
+      filtersList[trgt.target.name.slice(8)] = {
+        name: 'low',
+        max: 10000
+      };
+    }
+    if (trgt.target.value === 'middle') {
+      filtersList[trgt.target.name.slice(8)] = {
+        name: 'middle',
+        min: 10000,
+        max: 50000
+      };
+    }
+    if (trgt.target.value === 'high') {
+      filtersList[trgt.target.name.slice(8)] = {
+        name: 'high',
+        min: 50000
+      };
+    }
+    if (trgt.target.value === 'any') {
+      filtersList[trgt.target.name.slice(8)] = 'any';
+    }
+    renderFilteredPins(filtersList);
+  }
+
+  function filterPinsByRooms(trgt) {
+    filtersList[trgt.target.name.slice(8)] = trgt.target.value;
+    renderFilteredPins(filtersList);
+  }
+
+  function filterPinsByGuests(trgt) {
+    filtersList[trgt.target.name.slice(8)] = trgt.target.value;
+    renderFilteredPins(filtersList);
   }
 
   function mainPinMouseDown(evt) {
@@ -34,7 +149,7 @@
 
   function dragDropMainPin(evt) {
     var mainPin = window.data.mainPinElement;
-    mainPin.style.zIndex = getComputedStyle(document.querySelectorAll('.map__pin:not(.map__pin--main)')[0])['zIndex'] + 1;
+    mainPin.style.zIndex = getComputedStyle(mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)')[0])['zIndex'] + 1;
     evt.preventDefault();
     var startCoords = {
       x: evt.clientX,
@@ -87,7 +202,7 @@
 
 
   function addPopupOnPins() {
-    var pinsElementList = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var pinsElementList = mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)');
     for (var i = 0; i < pinsElementList.length; i++) {
       pinsElementList[i].addEventListener('mousedown', pinMouseDown);
       pinsElementList[i].addEventListener('keydown', pinEnterDown);
@@ -115,9 +230,10 @@
       window.data.toggleAvailability(window.data.menuFieldsetElementList, false);
       window.data.setAddressValue(window.data.PIN_LEG_HEIGHT);
       window.data.activateMap();
-      renderPinsOnMap(window.xhr.serverData);
+      renderPinsOnMap();
       addPopupOnPins();
       window.form.validation();
+      addEventsOnFilters();
     }
   }
   window.pin = {
