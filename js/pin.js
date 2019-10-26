@@ -44,44 +44,84 @@
   }
 
   function renderFilteredPins(filter) {
+    var isTypeCorrect = [];
+    var isPriceCorrect = [];
+    var isRoomsCorrect = [];
+    var isGuestsCorrect = [];
+    if (filter.type === undefined) {
+      filter.type = 'any';
+    }
+    if (filter.price === undefined) {
+      filter.price = 'any';
+    }
+    if (filter.rooms === undefined) {
+      filter.rooms = 'any';
+    }
+    if (filter.guests === undefined) {
+      filter.guests = 'any';
+    }
     clearPinsFromMap();
     var fragment = document.createDocumentFragment();
     for (var elem in filter) {
       if (Object.prototype.hasOwnProperty.call(filter, elem)) {
-        if (elem === 'price') {
-          if (filter[elem].name === 'low') {
-            for (var i = 0; i < pinsAmount; i++) {
-              if (window.xhr.serverData[i].offer[elem] <= filter[elem].max) {
-                fragment.appendChild(createPin(window.xhr.serverData[i], i));
-              }
+        for (var i = 0; i < pinsAmount; i++) {
+          if (elem === 'type' && filter.type === 'any' || elem === 'type' && filter.type === undefined) {
+            isTypeCorrect[i] = true;
+          }
+          if (elem === 'price' && filter.price === 'any' || elem === 'price' && filter.price === undefined) {
+            isPriceCorrect[i] = true;
+          }
+          if (elem === 'rooms' && filter.rooms === 'any' || elem === 'rooms' && filter.rooms === undefined) {
+            isRoomsCorrect[i] = true;
+          }
+          if (elem === 'guests' && filter.guests === 'any' || elem === 'guests' && filter.guests === undefined) {
+            isGuestsCorrect[i] = true;
+          }
+          if (filter[elem].name === 'low' && filter[elem] !== 'any') {
+            if (window.xhr.serverData[i].offer.price <= filter[elem].max) {
+              isPriceCorrect[i] = true;
+            } else {
+              isPriceCorrect[i] = false;
             }
           }
-          if (filter[elem].name === 'middle') {
-            for (i = 0; i < pinsAmount; i++) {
-              if (window.xhr.serverData[i].offer[elem] <= filter[elem].max && window.xhr.serverData[i].offer[elem] >= filter[elem].min) {
-                fragment.appendChild(createPin(window.xhr.serverData[i], i));
-              }
-            }
-
-          }
-          if (filter[elem].name === 'high') {
-            for (i = 0; i < pinsAmount; i++) {
-              if (window.xhr.serverData[i].offer[elem] >= filter[elem].min) {
-                fragment.appendChild(createPin(window.xhr.serverData[i], i));
-              }
+          if (filter[elem].name === 'middle' && filter[elem] !== 'any') {
+            if (window.xhr.serverData[i].offer.price <= filter[elem].max && window.xhr.serverData[i].offer.price >= filter[elem].min) {
+              isPriceCorrect[i] = true;
+            } else {
+              isPriceCorrect[i] = false;
             }
           }
-        }
-        if (filter[elem] !== 'any') {
-          clearPinsFromMap();
-          for (i = 0; i < pinsAmount; i++) {
-            if (window.xhr.serverData[i].offer[elem].toString() === filter[elem]) {
-              fragment.appendChild(createPin(window.xhr.serverData[i], i));
+          if (filter[elem].name === 'high' && filter[elem] !== 'any') {
+            if (window.xhr.serverData[i].offer.price >= filter[elem].min) {
+              isPriceCorrect[i] = true;
+            } else {
+              isPriceCorrect[i] = false;
             }
           }
-        } else {
-          clearPinsFromMap();
-          renderPinsOnMap();
+          if (elem === 'type' && filter[elem] !== 'any') {
+            if (window.xhr.serverData[i].offer.type.toString() === filter.type) {
+              isTypeCorrect[i] = true;
+            } else {
+              isTypeCorrect[i] = false;
+            }
+          }
+          if (elem === 'rooms' && filter[elem] !== 'any') {
+            if (window.xhr.serverData[i].offer.rooms.toString() === filter.rooms) {
+              isRoomsCorrect[i] = true;
+            } else {
+              isRoomsCorrect[i] = false;
+            }
+          }
+          if (elem === 'guests' && filter[elem] !== 'any') {
+            if (window.xhr.serverData[i].offer.guests.toString() === filter.guests) {
+              isGuestsCorrect[i] = true;
+            } else {
+              isGuestsCorrect[i] = false;
+            }
+          }
+          if (isTypeCorrect[i] === true && isPriceCorrect[i] === true && isRoomsCorrect[i] === true && isGuestsCorrect[i] === true) {
+            fragment.appendChild(createPin(window.xhr.serverData[i], i));
+          }
         }
       }
     }
@@ -131,11 +171,13 @@
 
   function filterPinsByRooms(trgt) {
     filtersList[trgt.target.name.slice(8)] = trgt.target.value;
+
     renderFilteredPins(filtersList);
   }
 
   function filterPinsByGuests(trgt) {
     filtersList[trgt.target.name.slice(8)] = trgt.target.value;
+
     renderFilteredPins(filtersList);
   }
 
