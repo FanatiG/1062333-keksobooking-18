@@ -1,4 +1,4 @@
-// модуль, который работает с формой объявления
+/* модуль, который работает с формой объявления */
 'use strict';
 (function () {
   var typeValue = document.querySelector('#type');
