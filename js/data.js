@@ -6,7 +6,7 @@
   var mainPinElement = document.querySelector('.map__pin--main');
   var mainPinAvatarElement = mainPinElement.querySelector('img');
   var addressInputElement = document.getElementById('address');
-  var mapWidth = document.querySelector('.map__overlay').clientWidth;
+  var mapWidth = Number(window.getComputedStyle(document.querySelector('body')).getPropertyValue('max-width').slice(0, 4));
   var pinWidth = document.querySelector('.map__pin--main').querySelector('img').offsetWidth;
   var maxXValue = mapWidth - (pinWidth / 2);
   var LOCATION_X = [0, maxXValue];
