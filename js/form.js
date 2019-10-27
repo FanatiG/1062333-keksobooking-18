@@ -55,7 +55,9 @@
       featuresElementList[i].checked = false;
     }
     document.querySelector('.ad-form-header__preview').querySelector('img').src = 'img/muffin-grey.svg';
-    document.querySelector('.ad-form__photo').querySelector('img').src = 'img/muffin-grey.svg';
+    if (document.querySelector('.ad-form__photo').querySelector('img')) {
+      document.querySelector('.ad-form__photo').querySelector('img').src = 'img/muffin-grey.svg';
+    }
     while (document.querySelector('.ad-form__photo').firstChild) {
       document.querySelector('.ad-form__photo').removeChild(document.querySelector('.ad-form__photo').firstChild);
     }
