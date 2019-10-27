@@ -1,4 +1,4 @@
-// модуль, который отвечает за создание пина — метки на карте
+/* модуль, который отвечает за создание пина — метки на карте */
 'use strict';
 (function () {
   var formHtmlClassList = document.querySelector('.notice').querySelector('.ad-form--disabled').classList;
