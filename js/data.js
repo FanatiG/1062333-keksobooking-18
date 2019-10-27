@@ -6,10 +6,12 @@
   var mainPinElement = document.querySelector('.map__pin--main');
   var mainPinAvatarElement = mainPinElement.querySelector('img');
   var addressInputElement = document.getElementById('address');
-  var LOCATION_X = [0, 1135];
+  var mapWidth = document.querySelector('.map__overlay').clientWidth;
+  var pinWidth = document.querySelector('.map__pin--main').querySelector('img').offsetWidth;
+  var maxXValue = mapWidth - (pinWidth / 2);
+  var LOCATION_X = [0, maxXValue];
   var LOCATION_Y = [130, 630];
   var mapHtmlClassList = document.getElementsByClassName('map')[0].classList;
-
   function setAddressValue(pinLegHeight) {
     var mainPinOffsetTop = mainPinElement.offsetTop;
     var mainPinOffsetLeft = mainPinElement.offsetLeft;
