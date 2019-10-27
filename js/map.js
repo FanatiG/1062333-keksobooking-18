@@ -1,4 +1,4 @@
-/* модуль, который управляет карточками объявлений и пинами: добавляет на страницу нужную карточку, отрисовывает пины и осуществляет взаимодействие карточки и метки на карте */
+// модуль, который управляет карточками объявлений и пинами: добавляет на страницу нужную карточку, отрисовывает пины и осуществляет взаимодействие карточки и метки на карте
 'use strict';
 (function () {
   var ESC_KEY_CODE = 27;
@@ -26,13 +26,16 @@
     document.querySelector('.map__card').classList.add('hidden');
     document.querySelector('.map').removeChild(document.querySelector('.map__card'));
     window.data.setAddressValue(window.data.PIN_LEG_HEIGHT);
+    for (var i = 0; i < window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)').length; i++) {
+      window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)')[i].classList.remove('map__pin--active');
+    }
   }
 
-  function popupCloseMouse() {
+  function popupCloseMouseHandler() {
     popupIntercation();
   }
 
-  function popupCloseButton(evt) {
+  function popupCloseButtonHandler(evt) {
     if (evt.keyCode === ESC_KEY_CODE) {
       popupIntercation();
     }
@@ -43,8 +46,16 @@
     var pinNumber = pinImage.dataset.id || 0;
     mapElement.insertBefore(renderPopup(window.xhr.serverData[pinNumber]), mapContainerElement);
     document.querySelector('.map__card').classList.remove('hidden');
-    document.querySelector('.popup__close').addEventListener('mousedown', popupCloseMouse);
-    document.addEventListener('keydown', popupCloseButton);
+    document.querySelector('.popup__close').addEventListener('mousedown', popupCloseMouseHandler);
+    document.addEventListener('keydown', popupCloseButtonHandler);
+    for (var i = 0; i < window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)').length; i++) {
+      window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)')[i].classList.remove('map__pin--active');
+    }
+    if (event.target instanceof Image) {
+      event.target.parentNode.classList.add('map__pin--active');
+    } else {
+      event.target.classList.add('map__pin--active');
+    }
   }
 
   function renderPopup(pinsList) {

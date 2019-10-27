@@ -1,4 +1,4 @@
-/* модуль, который отвечает за загрузку фотографий */
+// модуль, который отвечает за загрузку фотографий
 'use strict';
 (function () {
   var avatarPreviewElement = document.querySelector('.ad-form-header__preview').querySelector('img');
