@@ -45,6 +45,7 @@
     window.pin.formHtmlClassList.add('ad-form--disabled');
     document.querySelector('.ad-form').reset();
     window.data.setAddressValue();
+    typeChangeHandler();
     while (document.querySelector('.map__pin:not(.map__pin--main)')) {
       document.querySelector('.map__pins').removeChild(document.querySelector('.map__pin:not(.map__pin--main)'));
     }
@@ -74,21 +75,6 @@
     submitButtonElement.addEventListener('click', function (evt) {
       evt.preventDefault();
     });
-    if (!titleChangeHandler()) {
-      titleHtmlElement.style.border = 'solid #ff6d51';
-    } else {
-      titleHtmlElement.style.border = '1px solid #d9d9d3';
-    }
-    if (!priceChangeHandler()) {
-      priceHtmlElement.style.border = 'solid #ff6d51';
-    } else {
-      priceHtmlElement.style.border = '1px solid #d9d9d3';
-    }
-    if (!guestsChangeHandler()) {
-      guestsNumberElement.style.border = 'solid #ff6d51';
-    } else {
-      guestsNumberElement.style.border = '1px solid #d9d9d3';
-    }
     if (titleChangeHandler() && priceChangeHandler() && guestsChangeHandler()) {
       window.xhr.sendData();
       resetPage();
@@ -99,15 +85,19 @@
     var roomNumber = parseInt(roomsNumberElement.value, 10);
     var guestNumber = parseInt(guestsNumberElement.value, 10);
     if (roomNumber === 100 && guestNumber === 0) {
+      guestsNumberElement.style.border = '1px solid #d9d9d3';
       guestsNumberElement.setCustomValidity('');
       return true;
     } else if (roomNumber !== 100 && guestNumber <= roomNumber) {
+      guestsNumberElement.style.border = '1px solid #d9d9d3';
       guestsNumberElement.setCustomValidity('');
       return true;
     } else if (roomNumber === 100 && guestNumber !== 0) {
+      guestsNumberElement.style.border = 'solid #ff6d51';
       guestsNumberElement.setCustomValidity('Значение "Количество мест" должно быть ' + guestsNumberElement[3].textContent);
       return false;
     } else {
+      guestsNumberElement.style.border = 'solid #ff6d51';
       guestsNumberElement.setCustomValidity('Значение "Количество мест" должно быть ' + roomNumber + ' или меньше');
       return false;
     }
@@ -128,11 +118,13 @@
 
   function titleChangeHandler() {
     if (titleHtmlElement.value.length > MAX_TITLE_LENGTH || titleHtmlElement.value.length < MIN_TITLE_LENGTH) {
+      titleHtmlElement.style.border = 'solid #ff6d51';
       titleHtmlElement.setCustomValidity('Заголовок должен содержать от 30 до 100 символов!');
-      return false;
+      return titleHtmlElement.valid;
     } else {
+      titleHtmlElement.style.border = '1px solid #d9d9d3';
       titleHtmlElement.setCustomValidity('');
-      return true;
+      return titleHtmlElement.valid;
     }
   }
 
@@ -148,16 +140,18 @@
   function priceChangeHandler() {
     var priceValue = priceHtmlElement.value;
     if (priceValue < getPrices()['min'] || priceValue > getPrices()['max']) {
+      priceHtmlElement.style.border = 'solid #ff6d51';
       priceHtmlElement.setCustomValidity('Цена должна быть от ' + getPrices()['min'] + ' и до ' + getPrices()['max']);
       return false;
     } else {
+      priceHtmlElement.style.border = '1px solid #d9d9d3';
       priceHtmlElement.setCustomValidity('');
       return true;
     }
   }
 
   function typeChangeHandler() {
-    priceChangeHandler();
+    // priceChangeHandler();
     priceHtmlElement.placeholder = getPrices()['min'];
   }
 
@@ -168,7 +162,7 @@
   }();
 
   function validation() {
-    guestsChangeHandler();
+    // guestsChangeHandler();
     titleHtmlElement.addEventListener('input', titleChangeHandler);
     priceHtmlElement.addEventListener('input', priceChangeHandler);
     typeHtmlElement.addEventListener('change', typeChangeHandler);
