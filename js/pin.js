@@ -29,28 +29,25 @@
     }
   }
 
-  function renderPinsOnMap(pinsarray) {
+  function renderPinsOnMap(filteredPinsList) {
     clearPinsFromMap();
-    if (pinsarray) {
-      var fragment = document.createDocumentFragment();
-      for (var i = 0; i < pinsarray.length; i++) {
-        fragment.appendChild(createPin(pinsarray[i], i));
-      }
-      mapPinsElement.appendChild(fragment);
-      if (mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)').length > maxPinsAmount) {
-        removeExcessivePins();
-      }
+    if (filteredPinsList) {
+      generatePinsData(filteredPinsList);
     } else {
-      fragment = document.createDocumentFragment();
-      for (i = 0; i < filterPinsList.length; i++) {
-        fragment.appendChild(createPin(filterPinsList[i], i));
-      }
-      mapPinsElement.appendChild(fragment);
-      if (mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)').length > maxPinsAmount) {
-        removeExcessivePins();
-      }
+      generatePinsData(window.xhr.serverData);
     }
     addPopupOnPins();
+  }
+
+  function generatePinsData(pinsDataList) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < pinsDataList.length; i++) {
+      fragment.appendChild(createPin(pinsDataList[i], i));
+    }
+    mapPinsElement.appendChild(fragment);
+    if (mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)').length > maxPinsAmount) {
+      removeExcessivePins();
+    }
   }
 
   function mainPinMouseDownHandler(evt) {
@@ -233,73 +230,49 @@
 
   function onHousingFeatureWifiChange() {
     var filteredValue = housingFeatureWifi.checked;
-    if (filteredValue === true) {
-      var sameFeatureWifiPins = onHousingGuestsChange().filter(function (it) {
-        return it.offer.features.includes('wifi');
-      });
-    } else {
-      sameFeatureWifiPins = onHousingGuestsChange();
-    }
+    var sameFeatureWifiPins = filteredValue ? onHousingGuestsChange().filter(function (it) {
+      return it.offer.features.includes('wifi');
+    }) : onHousingGuestsChange();
     return sameFeatureWifiPins;
   }
 
   function onHousingFeatureDishwasherChange() {
     var filteredValue = housingFeatureDishwasher.checked;
-    if (filteredValue === true) {
-      var sameFeatureDishwasherPins = onHousingFeatureWifiChange().filter(function (it) {
-        return it.offer.features.includes('dishwasher');
-      });
-    } else {
-      sameFeatureDishwasherPins = onHousingFeatureWifiChange();
-    }
+    var sameFeatureDishwasherPins = filteredValue ? onHousingFeatureWifiChange().filter(function (it) {
+      return it.offer.features.includes('dishwasher');
+    }) : onHousingFeatureWifiChange();
     return sameFeatureDishwasherPins;
   }
 
   function onHousingFeatureParkingChange() {
     var filteredValue = housingFeatureParking.checked;
-    if (filteredValue === true) {
-      var sameFeatureParkingPins = onHousingFeatureDishwasherChange().filter(function (it) {
-        return it.offer.features.includes('parking');
-      });
-    } else {
-      sameFeatureParkingPins = onHousingFeatureDishwasherChange();
-    }
+    var sameFeatureParkingPins = filteredValue ? onHousingFeatureDishwasherChange().filter(function (it) {
+      return it.offer.features.includes('parking');
+    }) : onHousingFeatureDishwasherChange();
     return sameFeatureParkingPins;
   }
 
   function onHousingFeatureWasherChange() {
     var filteredValue = housingFeatureWasher.checked;
-    if (filteredValue === true) {
-      var sameFeatureWasherPins = onHousingFeatureParkingChange().filter(function (it) {
-        return it.offer.features.includes('washer');
-      });
-    } else {
-      sameFeatureWasherPins = onHousingFeatureParkingChange();
-    }
+    var sameFeatureWasherPins = filteredValue ? onHousingFeatureParkingChange().filter(function (it) {
+      return it.offer.features.includes('washer');
+    }) : onHousingFeatureParkingChange();
     return sameFeatureWasherPins;
   }
 
   function onHousingFeatureElevatorChange() {
     var filteredValue = housingFeatureElevator.checked;
-    if (filteredValue === true) {
-      var sameFeatureElevatorPins = onHousingFeatureWasherChange().filter(function (it) {
-        return it.offer.features.includes('elevator');
-      });
-    } else {
-      sameFeatureElevatorPins = onHousingFeatureWasherChange();
-    }
+    var sameFeatureElevatorPins = filteredValue ? onHousingFeatureWasherChange().filter(function (it) {
+      return it.offer.features.includes('elevator');
+    }) : onHousingFeatureWasherChange();
     return sameFeatureElevatorPins;
   }
 
   function onHousingFeatureConditionerChange() {
     var filteredValue = housingFeatureConditioner.checked;
-    if (filteredValue === true) {
-      var sameFeatureConditionerPins = onHousingFeatureElevatorChange().filter(function (it) {
-        return it.offer.features.includes('conditioner');
-      });
-    } else {
-      sameFeatureConditionerPins = onHousingFeatureElevatorChange();
-    }
+    var sameFeatureConditionerPins = filteredValue ? onHousingFeatureElevatorChange().filter(function (it) {
+      return it.offer.features.includes('conditioner');
+    }) : onHousingFeatureElevatorChange();
     return sameFeatureConditionerPins;
   }
 
