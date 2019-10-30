@@ -6,14 +6,6 @@
   var formHtmlClassList = document.querySelector('.notice').querySelector('.ad-form--disabled').classList;
   var pin = document.querySelector('#pin').content.querySelector('.map__pin');
   var mapPinsElement = document.querySelector('.map__pins');
-  // var mapFiltersElements = document.querySelector('.map__filters');
-  // var filtersList = {};
-  // var featureButtons = mapFiltersElements.querySelector('#housing-features').querySelectorAll('input');
-  // var featureButtonsCount = mapFiltersElements.querySelector('#housing-features').querySelectorAll('input').length;
-  // var typeFeatureElement = mapFiltersElements.querySelector('#housing-type');
-  // var priceFeatureElement = mapFiltersElements.querySelector('#housing-price');
-  // var roomsFeatureElement = mapFiltersElements.querySelector('#housing-rooms');
-  // var guestsFeatureElement = mapFiltersElements.querySelector('#housing-guests');
 
   function createPin(pinsList, i) {
     var pinClone = pin.cloneNode(true);
