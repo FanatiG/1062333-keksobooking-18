@@ -169,10 +169,10 @@
   housingFeatureConditioner.addEventListener('change', filterPinsList);
 
   function onHousingTypeChange() {
-    var filteredValue = housingType.options[housingType.selectedIndex].value;
-    if (filteredValue !== 'any' && filteredValue !== undefined) {
+    var filterValue = housingType.options[housingType.selectedIndex].value;
+    if (filterValue !== 'any' && filterValue !== undefined) {
       var sameHousingPins = window.xhr.serverData.filter(function (it) {
-        return it.offer.type === filteredValue;
+        return it.offer.type === filterValue;
       });
     } else {
       sameHousingPins = window.xhr.serverData;
@@ -181,19 +181,19 @@
   }
 
   function onHousingPriceChange() {
-    var filteredValue = housingPrice.options[housingPrice.selectedIndex].value;
-    if (filteredValue !== 'any' && filteredValue !== undefined) {
-      if (filteredValue === 'low') {
+    var filterValue = housingPrice.options[housingPrice.selectedIndex].value;
+    if (filterValue !== 'any' && filterValue !== undefined) {
+      if (filterValue === 'low') {
         var samePricePins = onHousingTypeChange().filter(function (it) {
           return it.offer.price <= 10000;
         });
       }
-      if (filteredValue === 'middle') {
+      if (filterValue === 'middle') {
         samePricePins = onHousingTypeChange().filter(function (it) {
           return it.offer.price >= 10000 && it.offer.price <= 50000;
         });
       }
-      if (filteredValue === 'high') {
+      if (filterValue === 'high') {
         samePricePins = onHousingTypeChange().filter(function (it) {
           return it.offer.price >= 50000;
         });
@@ -205,10 +205,10 @@
   }
 
   function onHousingRoomsChange() {
-    var filteredValue = housingRooms.options[housingRooms.selectedIndex].value;
-    if (filteredValue !== 'any' && filteredValue !== undefined) {
+    var filterValue = housingRooms.options[housingRooms.selectedIndex].value;
+    if (filterValue !== 'any' && filterValue !== undefined) {
       var sameRoomingPins = onHousingPriceChange().filter(function (it) {
-        return it.offer.rooms === Number(filteredValue);
+        return it.offer.rooms === Number(filterValue);
       });
     } else {
       sameRoomingPins = onHousingPriceChange();
@@ -217,10 +217,10 @@
   }
 
   function onHousingGuestsChange() {
-    var filteredValue = housingGuests.options[housingGuests.selectedIndex].value;
-    if (filteredValue !== 'any' && filteredValue !== undefined) {
+    var filterValue = housingGuests.options[housingGuests.selectedIndex].value;
+    if (filterValue !== 'any' && filterValue !== undefined) {
       var sameGuestsPins = onHousingRoomsChange().filter(function (it) {
-        return it.offer.guests === Number(filteredValue);
+        return it.offer.guests === Number(filterValue);
       });
     } else {
       sameGuestsPins = onHousingRoomsChange();
@@ -228,52 +228,41 @@
     return sameGuestsPins;
   }
 
-  function onHousingFeatureWifiChange() {
-    var filteredValue = housingFeatureWifi.checked;
-    var sameFeatureWifiPins = filteredValue ? onHousingGuestsChange().filter(function (it) {
-      return it.offer.features.includes('wifi');
-    }) : onHousingGuestsChange();
+  function filterByFeature(filterValue, listToFilter, featureName) {
+    var sameFeatureWifiPins = filterValue ? listToFilter.filter(function (it) {
+      return it.offer.features.includes(featureName);
+    }) : listToFilter;
     return sameFeatureWifiPins;
   }
 
+  function onHousingFeatureWifiChange() {
+    var filterValue = housingFeatureWifi.checked;
+    return filterByFeature(filterValue, onHousingGuestsChange(), 'wifi');
+  }
+
   function onHousingFeatureDishwasherChange() {
-    var filteredValue = housingFeatureDishwasher.checked;
-    var sameFeatureDishwasherPins = filteredValue ? onHousingFeatureWifiChange().filter(function (it) {
-      return it.offer.features.includes('dishwasher');
-    }) : onHousingFeatureWifiChange();
-    return sameFeatureDishwasherPins;
+    var filterValue = housingFeatureDishwasher.checked;
+    return filterByFeature(filterValue, onHousingFeatureWifiChange(), 'dishwasher');
   }
 
   function onHousingFeatureParkingChange() {
-    var filteredValue = housingFeatureParking.checked;
-    var sameFeatureParkingPins = filteredValue ? onHousingFeatureDishwasherChange().filter(function (it) {
-      return it.offer.features.includes('parking');
-    }) : onHousingFeatureDishwasherChange();
-    return sameFeatureParkingPins;
+    var filterValue = housingFeatureParking.checked;
+    return filterByFeature(filterValue, onHousingFeatureDishwasherChange(), 'parking');
   }
 
   function onHousingFeatureWasherChange() {
-    var filteredValue = housingFeatureWasher.checked;
-    var sameFeatureWasherPins = filteredValue ? onHousingFeatureParkingChange().filter(function (it) {
-      return it.offer.features.includes('washer');
-    }) : onHousingFeatureParkingChange();
-    return sameFeatureWasherPins;
+    var filterValue = housingFeatureWasher.checked;
+    return filterByFeature(filterValue, onHousingFeatureParkingChange(), 'washer');
   }
 
   function onHousingFeatureElevatorChange() {
-    var filteredValue = housingFeatureElevator.checked;
-    var sameFeatureElevatorPins = filteredValue ? onHousingFeatureWasherChange().filter(function (it) {
-      return it.offer.features.includes('elevator');
-    }) : onHousingFeatureWasherChange();
-    return sameFeatureElevatorPins;
+    var filterValue = housingFeatureElevator.checked;
+    return filterByFeature(filterValue, onHousingFeatureWasherChange(), 'elevator');
   }
 
   function onHousingFeatureConditionerChange() {
-    var filteredValue = housingFeatureConditioner.checked;
-    var sameFeatureConditionerPins = filteredValue ? onHousingFeatureElevatorChange().filter(function (it) {
-      return it.offer.features.includes('conditioner');
-    }) : onHousingFeatureElevatorChange();
-    return sameFeatureConditionerPins;
+    var filterValue = housingFeatureConditioner.checked;
+    return filterByFeature(filterValue, onHousingFeatureElevatorChange(), 'conditioner');
   }
 
   function filterPinsList() {
