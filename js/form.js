@@ -151,7 +151,6 @@
   }
 
   function typeChangeHandler() {
-    // priceChangeHandler();
     priceHtmlElement.placeholder = getPrices()['min'];
   }
 
@@ -162,7 +161,6 @@
   }();
 
   function validation() {
-    // guestsChangeHandler();
     titleHtmlElement.addEventListener('input', titleChangeHandler);
     priceHtmlElement.addEventListener('input', priceChangeHandler);
     typeHtmlElement.addEventListener('change', typeChangeHandler);
