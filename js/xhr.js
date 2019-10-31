@@ -1,5 +1,4 @@
-/* модуль для отрисовки меток на карте так, чтобы в качестве данных использовались не случайно сгенерированные объекты,
-которые вы делали в задании «Личный проект: пока все дома», а те данные, которые вы загрузите с сервера */
+// модуль, который получает данные с сервера и отправляет их на сервер
 'use strict';
 (function () {
   var mainElement = document.querySelector('main');
@@ -23,10 +22,10 @@
   function sendData() {
     var dataToSend = new XMLHttpRequest();
     dataToSend.onerror = function () {
-      function escCloseErrorMenu(evt) {
+      function escCloseErrorMenuHandler(evt) {
         if (evt.keyCode === window.map.ESC_KEY_CODE) {
           serverErrorMessageTemplate.remove();
-          mainElement.removeEventListener('keydown', escCloseErrorMenu);
+          mainElement.removeEventListener('keydown', escCloseErrorMenuHandler);
         }
       }
       var fragment = document.createDocumentFragment();
@@ -34,7 +33,7 @@
       serverErrorMessageTemplate.addEventListener('click', function () {
         serverErrorMessageTemplate.remove();
       });
-      mainElement.addEventListener('keydown', escCloseErrorMenu);
+      mainElement.addEventListener('keydown', escCloseErrorMenuHandler);
       mainElement.appendChild(fragment);
       serverErrorMessageTemplate.querySelector('.error__button').addEventListener('click', function () {
         event.stopPropagation();
