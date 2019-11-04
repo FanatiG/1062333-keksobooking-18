@@ -1,9 +1,18 @@
 // модуль, который работает с формой объявления
 'use strict';
 (function () {
-  var typeValue = document.querySelector('#type');
   var MAX_TITLE_LENGTH = 100;
   var MIN_TITLE_LENGTH = 30;
+  var MAX_ROOMS_NUMBER = 100;
+  var GUESTS_NUMBER = 0;
+  var NUMBER_SYSTEM = 10;
+  var FORM_NUMBER = 1;
+  var ERROR_INPUT_STYLE_BORDER = 'solid #ff6d51';
+  var CORRECT_INPUT_STYLE_BORDER = '1px solid #d9d9d3';
+  var MAIN_PIN_DEFAULT_STYLE_LEFT = '570px';
+  var MAIN_PIN_DEFAULT_STYLE_TOP = '375px';
+
+  var typeValue = document.querySelector('#type');
   var titleHtmlElement = document.querySelector('#title');
   var guestsNumberElement = document.querySelector('#capacity');
   var roomsNumberElement = document.querySelector('#room_number');
@@ -35,33 +44,42 @@
   };
   var submitButtonElement = document.querySelector('.ad-form__submit');
   var resetButtonElement = document.querySelector('.ad-form__reset');
-  var filtersElementList = document.querySelector('.map__filters-container').querySelector('.map__filters').querySelectorAll('select');
-  var featuresElementList = document.querySelector('.map__filters-container').querySelector('.map__filters').querySelector('#housing-features').querySelectorAll('input');
+  var mainMap = document.querySelector('.map__pins');
+  var mainForm = document.forms[FORM_NUMBER];
+  var mainFormElements = document.forms[FORM_NUMBER].children;
 
   function resetPage() {
-    window.data.mainPinElement.style.left = '570px';
-    window.data.mainPinElement.style.top = '375px';
+    var isPinsOnPage = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var clientHousePhoto = document.querySelector('.ad-form__photo img');
+    var clientHousePhotoContainer = document.querySelector('.ad-form__photo');
+
+    guestsNumberElement.style.border = CORRECT_INPUT_STYLE_BORDER;
+    titleHtmlElement.style.border = CORRECT_INPUT_STYLE_BORDER;
+    priceHtmlElement.style.border = CORRECT_INPUT_STYLE_BORDER;
+    window.data.mainPinElement.style.left = MAIN_PIN_DEFAULT_STYLE_LEFT;
+    window.data.mainPinElement.style.top = MAIN_PIN_DEFAULT_STYLE_TOP;
     window.data.mapHtmlClassList.add('map--faded');
     window.pin.formHtmlClassList.add('ad-form--disabled');
-    document.querySelector('.ad-form').reset();
-    window.data.setAddressValue();
     typeChangeHandler();
-    while (document.querySelector('.map__pin:not(.map__pin--main)')) {
-      document.querySelector('.map__pins').removeChild(document.querySelector('.map__pin:not(.map__pin--main)'));
+    for (var elem in isPinsOnPage) {
+      if (Object.prototype.hasOwnProperty.call(isPinsOnPage, elem)) {
+        mainMap.removeChild(isPinsOnPage[elem]);
+      }
     }
-    for (var i = 0; i < filtersElementList.length; i++) {
-      filtersElementList[i].value = 'any';
+    mainForm.reset();
+    for (elem in mainFormElements) {
+      if (Object.prototype.hasOwnProperty.call(mainFormElements, elem)) {
+        mainFormElements[elem].setAttribute('disabled', 'disabled');
+      }
     }
-    for (i = 0; i < featuresElementList.length; i++) {
-      featuresElementList[i].checked = false;
+    document.querySelector('.ad-form-header__preview img').src = 'img/muffin-grey.svg';
+    if (clientHousePhoto) {
+      clientHousePhoto.src = 'img/muffin-grey.svg';
     }
-    document.querySelector('.ad-form-header__preview').querySelector('img').src = 'img/muffin-grey.svg';
-    if (document.querySelector('.ad-form__photo').querySelector('img')) {
-      document.querySelector('.ad-form__photo').querySelector('img').src = 'img/muffin-grey.svg';
+    while (clientHousePhotoContainer.firstChild) {
+      clientHousePhotoContainer.removeChild(clientHousePhotoContainer.firstChild);
     }
-    while (document.querySelector('.ad-form__photo').firstChild) {
-      document.querySelector('.ad-form__photo').removeChild(document.querySelector('.ad-form__photo').firstChild);
-    }
+    window.data.setAddressValue();
   }
 
   function resetButtonHandler() {
@@ -75,29 +93,33 @@
     submitButtonElement.addEventListener('click', function (evt) {
       evt.preventDefault();
     });
-    if (titleChangeHandler() && priceChangeHandler() && guestsChangeHandler()) {
+    if (!titleChangeHandler() || !priceChangeHandler() || !guestsChangeHandler()) {
+      titleChangeHandler();
+      priceChangeHandler();
+      guestsChangeHandler();
+    } else {
       window.xhr.sendData();
       resetPage();
     }
   }
 
   function guestsChangeHandler() {
-    var roomNumber = parseInt(roomsNumberElement.value, 10);
-    var guestNumber = parseInt(guestsNumberElement.value, 10);
-    if (roomNumber === 100 && guestNumber === 0) {
-      guestsNumberElement.style.border = '1px solid #d9d9d3';
+    var roomNumber = parseInt(roomsNumberElement.value, NUMBER_SYSTEM);
+    var guestNumber = parseInt(guestsNumberElement.value, NUMBER_SYSTEM);
+    if (roomNumber === MAX_ROOMS_NUMBER && guestNumber === GUESTS_NUMBER) {
+      guestsNumberElement.style.border = CORRECT_INPUT_STYLE_BORDER;
       guestsNumberElement.setCustomValidity('');
       return true;
-    } else if (roomNumber !== 100 && guestNumber <= roomNumber) {
-      guestsNumberElement.style.border = '1px solid #d9d9d3';
+    } else if (roomNumber !== MAX_ROOMS_NUMBER && guestNumber <= roomNumber) {
+      guestsNumberElement.style.border = CORRECT_INPUT_STYLE_BORDER;
       guestsNumberElement.setCustomValidity('');
       return true;
-    } else if (roomNumber === 100 && guestNumber !== 0) {
-      guestsNumberElement.style.border = 'solid #ff6d51';
+    } else if (roomNumber === MAX_ROOMS_NUMBER && guestNumber !== GUESTS_NUMBER) {
+      guestsNumberElement.style.border = ERROR_INPUT_STYLE_BORDER;
       guestsNumberElement.setCustomValidity('Значение "Количество мест" должно быть ' + guestsNumberElement[3].textContent);
       return false;
     } else {
-      guestsNumberElement.style.border = 'solid #ff6d51';
+      guestsNumberElement.style.border = ERROR_INPUT_STYLE_BORDER;
       guestsNumberElement.setCustomValidity('Значение "Количество мест" должно быть ' + roomNumber + ' или меньше');
       return false;
     }
@@ -118,13 +140,13 @@
 
   function titleChangeHandler() {
     if (titleHtmlElement.value.length > MAX_TITLE_LENGTH || titleHtmlElement.value.length < MIN_TITLE_LENGTH) {
-      titleHtmlElement.style.border = 'solid #ff6d51';
+      titleHtmlElement.style.border = ERROR_INPUT_STYLE_BORDER;
       titleHtmlElement.setCustomValidity('Заголовок должен содержать от 30 до 100 символов!');
-      return titleHtmlElement.valid;
+      return false;
     } else {
-      titleHtmlElement.style.border = '1px solid #d9d9d3';
+      titleHtmlElement.style.border = CORRECT_INPUT_STYLE_BORDER;
       titleHtmlElement.setCustomValidity('');
-      return titleHtmlElement.valid;
+      return true;
     }
   }
 
@@ -140,11 +162,11 @@
   function priceChangeHandler() {
     var priceValue = priceHtmlElement.value;
     if (priceValue < getPrices()['min'] || priceValue > getPrices()['max']) {
-      priceHtmlElement.style.border = 'solid #ff6d51';
+      priceHtmlElement.style.border = ERROR_INPUT_STYLE_BORDER;
       priceHtmlElement.setCustomValidity('Цена должна быть от ' + getPrices()['min'] + ' и до ' + getPrices()['max']);
       return false;
     } else {
-      priceHtmlElement.style.border = '1px solid #d9d9d3';
+      priceHtmlElement.style.border = CORRECT_INPUT_STYLE_BORDER;
       priceHtmlElement.setCustomValidity('');
       return true;
     }
