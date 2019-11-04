@@ -6,7 +6,8 @@
   var MAX_ROOMS_NUMBER = 100;
   var GUESTS_NUMBER = 0;
   var NUMBER_SYSTEM = 10;
-  var FORM_NUMBER = 1;
+  var FIRST_FORM = 0;
+  var SECOND_FORM = 1;
   var ERROR_INPUT_STYLE_BORDER = 'solid #ff6d51';
   var CORRECT_INPUT_STYLE_BORDER = '1px solid #d9d9d3';
   var MAIN_PIN_DEFAULT_STYLE_LEFT = '570px';
@@ -45,8 +46,9 @@
   var submitButtonElement = document.querySelector('.ad-form__submit');
   var resetButtonElement = document.querySelector('.ad-form__reset');
   var mainMap = document.querySelector('.map__pins');
-  var mainForm = document.forms[FORM_NUMBER];
-  var mainFormElements = document.forms[FORM_NUMBER].children;
+  var mainForm = document.forms[SECOND_FORM];
+  var mapForm = document.forms[FIRST_FORM];
+  var mainFormElements = document.forms[SECOND_FORM].children;
 
   function resetPage() {
     var isPinsOnPage = document.querySelectorAll('.map__pin:not(.map__pin--main)');
@@ -60,6 +62,7 @@
     window.data.mainPinElement.style.top = MAIN_PIN_DEFAULT_STYLE_TOP;
     window.data.mapHtmlClassList.add('map--faded');
     window.pin.formHtmlClassList.add('ad-form--disabled');
+    mapForm.reset();
     typeChangeHandler();
     for (var elem in isPinsOnPage) {
       if (Object.prototype.hasOwnProperty.call(isPinsOnPage, elem)) {

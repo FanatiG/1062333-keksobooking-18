@@ -16,7 +16,7 @@
         window.xhr.serverData = JSON.parse(this.responseText);
         window.xhr.sendData = sendData;
         window.xhr.receiveData = receiveData;
-        window.pin.filterPinsList();
+        window.pin.renderPinsOnMap();
       }
     };
     receivedData.onerror = function () {
