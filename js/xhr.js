@@ -1,23 +1,32 @@
 // модуль, который получает данные с сервера и отправляет их на сервер
 'use strict';
 (function () {
+  var READY_STATE = 4;
+  var STATUS = 200;
+
   var mainElement = document.querySelector('main');
   var serverErrorMessageTemplate = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
-  var receiveData = new XMLHttpRequest();
-  receiveData.onreadystatechange = function () {
-    window.xhr = {};
-    if (this.readyState === 4 && this.status === 200) {
-      window.xhr.serverData = JSON.parse(this.responseText);
-      window.xhr.sendData = sendData;
-    }
-  };
-  receiveData.onerror = function () {
-    var fragment = document.createDocumentFragment();
-    fragment.appendChild(serverErrorMessageTemplate);
-    mainElement.appendChild(fragment);
-  };
-  receiveData.open('GET', 'https://js.dump.academy/keksobooking/data', true);
-  receiveData.send();
+  var serverSuccessMessageTemplate = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+
+  function receiveData() {
+    var receivedData = new XMLHttpRequest();
+    receivedData.onreadystatechange = function () {
+      window.xhr = {};
+      if (this.readyState === READY_STATE && this.status === STATUS) {
+        window.xhr.serverData = JSON.parse(this.responseText);
+        window.xhr.sendData = sendData;
+        window.xhr.receiveData = receiveData;
+        window.pin.renderPinsOnMap();
+      }
+    };
+    receivedData.onerror = function () {
+      var fragment = document.createDocumentFragment();
+      fragment.appendChild(serverErrorMessageTemplate);
+      mainElement.appendChild(fragment);
+    };
+    receivedData.open('GET', 'https://js.dump.academy/keksobooking/data', true);
+    receivedData.send();
+  }
 
   function sendData() {
     var dataToSend = new XMLHttpRequest();
@@ -47,8 +56,7 @@
           mainElement.removeEventListener('keydown', escCloseSuccessMenu);
         }
       }
-      if (this.readyState === 4 && this.status === 200) {
-        var serverSuccessMessageTemplate = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+      if (this.readyState === READY_STATE && this.status === STATUS) {
         var fragment = document.createDocumentFragment();
         fragment.appendChild(serverSuccessMessageTemplate);
         serverSuccessMessageTemplate.addEventListener('click', function () {
@@ -61,4 +69,7 @@
     dataToSend.open('POST', 'https://js.dump.academy/keksobooking');
     dataToSend.send(new FormData(document.forms[1]));
   }
+  window.xhr = {
+    receiveData: receiveData
+  };
 })();

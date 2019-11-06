@@ -2,16 +2,13 @@
 'use strict';
 (function () {
   var PIN_LEG_HEIGHT = 22;
-  var menuFieldsetElementList = document.querySelector('.ad-form').querySelectorAll('fieldset');
+
+  var menuFieldsetElementList = document.querySelectorAll('.ad-form fieldset');
   var mainPinElement = document.querySelector('.map__pin--main');
   var mainPinAvatarElement = mainPinElement.querySelector('img');
-  var addressInputElement = document.getElementById('address');
-  var mapWidth = Number(window.getComputedStyle(document.querySelector('body')).getPropertyValue('max-width').slice(0, 4));
-  var pinWidth = document.querySelector('.map__pin--main').querySelector('img').offsetWidth;
-  var maxXValue = mapWidth - (pinWidth / 2);
-  var LOCATION_X = [0, maxXValue];
-  var LOCATION_Y = [130, 630];
-  var mapHtmlClassList = document.getElementsByClassName('map')[0].classList;
+  var addressInputElement = document.querySelector('#address');
+  var mapHtmlClassList = document.querySelector('.map').classList;
+
   function setAddressValue(pinLegHeight) {
     var mainPinOffsetTop = mainPinElement.offsetTop;
     var mainPinOffsetLeft = mainPinElement.offsetLeft;
@@ -26,24 +23,19 @@
   }
 
   function toggleAvailability(selector, status) {
-    for (var i = 0; i < selector.length; i++) {
-      selector[i].disabled = status;
+    for (var elem in selector) {
+      if (Object.prototype.hasOwnProperty.call(selector, elem)) {
+        selector[elem].disabled = status;
+      }
     }
-  }
-
-  function activateMap() {
-    mapHtmlClassList.remove('map--faded');
   }
 
   window.data = {
     PIN_LEG_HEIGHT: PIN_LEG_HEIGHT,
     setAddressValue: setAddressValue,
     mainPinElement: mainPinElement,
-    activateMap: activateMap,
     menuFieldsetElementList: menuFieldsetElementList,
     toggleAvailability: toggleAvailability,
-    locationX: LOCATION_X,
-    locationY: LOCATION_Y,
     mapHtmlClassList: mapHtmlClassList
   };
 })();

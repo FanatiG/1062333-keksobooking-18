@@ -1,7 +1,7 @@
 // модуль, который отвечает за загрузку фотографий
 'use strict';
 (function () {
-  var avatarPreviewElement = document.querySelector('.ad-form-header__preview').querySelector('img');
+  var avatarPreviewElement = document.querySelector('.ad-form-header__preview img');
   var housePhotoElement = document.querySelector('.ad-form__photo');
 
   function uploadAvatarHandler(evt) {
@@ -22,7 +22,7 @@
     var reader = new FileReader();
     reader.onload = (function (theFile) {
       return function (trgt) {
-        if (!document.querySelector('.ad-form__photo').querySelector('img')) {
+        if (!document.querySelector('.ad-form__photo img')) {
           var imgToInsert = document.createElement('img');
           imgToInsert.title = escape(theFile.name);
           imgToInsert.src = trgt.target.result;
@@ -37,6 +37,7 @@
     })(uploadedFileData);
     reader.readAsDataURL(uploadedFileData);
   }
-  document.getElementById('avatar').addEventListener('change', uploadAvatarHandler);
-  document.getElementById('images').addEventListener('change', uploadHousePhotoHandler);
+
+  document.querySelector('#avatar').addEventListener('change', uploadAvatarHandler);
+  document.querySelector('#images').addEventListener('change', uploadHousePhotoHandler);
 })();
