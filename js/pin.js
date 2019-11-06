@@ -171,18 +171,14 @@
       item.offer.type === houseTypeQuantity.value;
   };
   var filterByPrice = function (item) {
-    if (housePriceQuantity.value === MIN_PRICE_ID) {
-      return housePriceQuantity.value === FILTER_DEFAULT_VALUE ?
-        true :
-        item.offer.price <= MIN_PRICE;
+    if (housePriceQuantity.value === FILTER_DEFAULT_VALUE) {
+      return true;
+    } else if (housePriceQuantity.value === MIN_PRICE_ID) {
+      return item.offer.price <= MIN_PRICE;
     } else if (housePriceQuantity.value === MID_PRICE_ID) {
-      return housePriceQuantity.value === FILTER_DEFAULT_VALUE ?
-        true :
-        item.offer.price >= MIN_PRICE && item.offer.price <= MAX_PRICE;
+      return item.offer.price >= MIN_PRICE && item.offer.price <= MAX_PRICE;
     } else {
-      return housePriceQuantity.value === FILTER_DEFAULT_VALUE ?
-        true :
-        item.offer.price >= MAX_PRICE;
+      return item.offer.price >= MAX_PRICE;
     }
   };
   var filterByRooms = function (item) {
