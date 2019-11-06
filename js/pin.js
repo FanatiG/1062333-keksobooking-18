@@ -54,6 +54,11 @@
     addPopupOnPins();
     defaultPins = window.xhr.serverData;
     window.pin.pins = defaultPins;
+    for (var elem in window.form.mapForm) {
+      if (Object.prototype.hasOwnProperty.call(window.form.mapForm, elem)) {
+        window.form.mapForm[elem].removeAttribute('disabled', 'disabled');
+      }
+    }
   }
 
   function generatePinsData(pinsDataList) {

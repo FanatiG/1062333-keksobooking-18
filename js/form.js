@@ -50,6 +50,14 @@
   var mapForm = document.forms[FIRST_FORM];
   var mainFormElements = document.forms[SECOND_FORM].children;
 
+  document.onload = function () {
+    for (var elem in mapForm) {
+      if (Object.prototype.hasOwnProperty.call(mapForm, elem)) {
+        mapForm[elem].setAttribute('disabled', 'disabled');
+      }
+    }
+  }();
+
   function resetPage() {
     var isPinsOnPage = document.querySelectorAll('.map__pin:not(.map__pin--main)');
     var clientHousePhoto = document.querySelector('.ad-form__photo img');
@@ -197,6 +205,7 @@
     resetButtonElement.addEventListener('mouseup', resetButtonHandler);
   }
   window.form = {
-    validation: validation
+    validation: validation,
+    mapForm: mapForm
   };
 })();
