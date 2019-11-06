@@ -170,6 +170,7 @@
       true :
       item.offer.type === houseTypeQuantity.value;
   };
+
   var filterByPrice = function (item) {
     if (housePriceQuantity.value === FILTER_DEFAULT_VALUE) {
       return true;
@@ -181,16 +182,19 @@
       return item.offer.price >= MAX_PRICE;
     }
   };
+
   var filterByRooms = function (item) {
     return houseRoomsQuantity.value === FILTER_DEFAULT_VALUE ?
       true :
       item.offer.rooms === parseInt(houseRoomsQuantity.value, 10);
   };
+
   var filterByGuests = function (item) {
     return houseGuestsQuantity.value === FILTER_DEFAULT_VALUE ?
       true :
       item.offer.guests === parseInt(houseGuestsQuantity.value, 10);
   };
+
   var filterByFeatures = function (item) {
     return Array.from(houseFeatures)
       .filter(function (element) {
@@ -203,6 +207,7 @@
         return item.offer.features.includes(feature);
       });
   };
+
   var filterData = function (data) {
     return data
       .filter(function (item) {
