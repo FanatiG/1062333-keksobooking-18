@@ -14,6 +14,7 @@
   var MIN_PRICE_ID = 'low';
   var MID_PRICE_ID = 'middle';
   var FILTER_DEFAULT_VALUE = 'any';
+  var DEBOUNCE_INTERVAL = 500;
 
   var formHtmlClassList = document.querySelector('.ad-form--disabled').classList;
   var pin = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -71,60 +72,105 @@
     });
     mapPinsElement.appendChild(fragment);
   }
-
+  // --------------------------------------------------------------------------------------------------------------------------------
   function mainPinMouseDownHandler(evt) {
     if (formHtmlClassList.contains('ad-form--disabled')) {
       activatePage();
     } else {
-      dragDropMainPin(evt);
+      // dragDropMainPin(evt);
+      var mainPin = window.data.mainPinElement;
+      mainPin.addEventListener('mousedown', function () {
+        evt.preventDefault();
+
+        var startCoords = {
+          x: evt.clientX,
+          y: evt.clientY
+        };
+
+        var onMouseMove = function (moveEvt) {
+          moveEvt.preventDefault();
+
+          var shift = {
+            x: startCoords.x - moveEvt.clientX,
+            y: startCoords.y - moveEvt.clientY
+          };
+
+          startCoords = {
+            x: moveEvt.clientX,
+            y: moveEvt.clientY
+          };
+
+          var bordersOfPinPosition = {
+            minX: 0,
+            maxX: MAP_WIDTH - 62,
+            minY: 130 - 62,
+            maxY: 630 - 62
+          };
+
+          if (mainPin.offsetLeft - shift.x >= bordersOfPinPosition.minX &&
+            mainPin.offsetLeft - shift.x <= bordersOfPinPosition.maxX &&
+            mainPin.offsetTop - shift.y >= bordersOfPinPosition.minY &&
+            mainPin.offsetTop - shift.y <= bordersOfPinPosition.maxY) {
+            mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+            mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+          }
+
+          // addValueToAddressInput();
+        };
+        mainPin.addEventListener('mousemove', onMouseMove);
+        mainPin.addEventListener('mouseup', function () {
+          mainPin.removeEventListener('mousemove', onMouseMove);
+        });
+      });
     }
   }
+  // --------------------------------------------------------------------------------------------------------------------------------
 
-  function dragDropMainPin(evt) {
-    var mainPin = window.data.mainPinElement;
-    mainPin.style.zIndex = getComputedStyle(document.querySelector('.map__pin'))['zIndex'] + 1;
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
-    var mainPinMouseMoveHandler = function (moveEvt) {
-      var minCoordX = LOCATION_X[0];
-      var maxCoordX = LOCATION_X[1];
-      var minCoordY = LOCATION_Y[0];
-      var maxCoordY = LOCATION_Y[1];
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
-      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
-      if (mainPin.style.left.slice(0, -2) < minCoordX) {
-        mainPin.style.left = minCoordX + 'px';
-      }
-      if (mainPin.style.left.slice(0, -2) > maxCoordX) {
-        mainPin.style.left = maxCoordX + 'px';
-      }
-      if (mainPin.style.top.slice(0, -2) < minCoordY) {
-        mainPin.style.top = minCoordY + 'px';
-      }
-      if (mainPin.style.top.slice(0, -2) > maxCoordY) {
-        mainPin.style.top = maxCoordY + 'px';
-      }
-      window.data.setAddressValue(window.data.PIN_LEG_HEIGHT);
-    };
-    var mainPinStopHandler = function () {
-      mainPin.removeEventListener('mousemove', mainPinMouseMoveHandler);
-      mainPin.removeEventListener('mouseup', mainPinStopHandler);
-      mainPin.removeEventListener('mouseout', mainPinStopHandler);
-    };
-    mainPin.addEventListener('mousemove', mainPinMouseMoveHandler);
-    mainPin.addEventListener('mouseup', mainPinStopHandler);
-    mainPin.addEventListener('mouseout', mainPinStopHandler);
-  }
+  // function dragDropMainPin(evt) {
+  //   var mainPin = window.data.mainPinElement;
+  //   mainPin.style.zIndex = getComputedStyle(document.querySelector('.map__pin'))['zIndex'] + 1;
+  //   var startCoords = {
+  //     x: evt.clientX,
+  //     y: evt.clientY
+  //   };
+  //   var mainPinMouseMoveHandler = function (moveEvt) {
+  //     var minCoordX = LOCATION_X[0];
+  //     var maxCoordX = LOCATION_X[1];
+  //     var minCoordY = LOCATION_Y[0];
+  //     var maxCoordY = LOCATION_Y[1];
+  //     var shift = {
+  //       x: startCoords.x - moveEvt.clientX,
+  //       y: startCoords.y - moveEvt.clientY
+  //     };
+  //     startCoords = {
+  //       x: moveEvt.clientX,
+  //       y: moveEvt.clientY
+  //     };
+  //     mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+  //     mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+  //     if (mainPin.style.left.slice(0, -2) < minCoordX) {
+  //       mainPin.style.left = minCoordX + 'px';
+  //     }
+  //     if (mainPin.style.left.slice(0, -2) > maxCoordX) {
+  //       mainPin.style.left = maxCoordX + 'px';
+  //     }
+  //     if (mainPin.style.top.slice(0, -2) < minCoordY) {
+  //       mainPin.style.top = minCoordY + 'px';
+  //     }
+  //     if (mainPin.style.top.slice(0, -2) > maxCoordY) {
+  //       mainPin.style.top = maxCoordY + 'px';
+  //     }
+  //     window.data.setAddressValue(window.data.PIN_LEG_HEIGHT);
+  //   };
+  //   var mainPinStopHandler = function () {
+  //     mainPin.removeEventListener('mousemove', mainPinMouseMoveHandler);
+  //     mainPin.removeEventListener('mouseup', mainPinStopHandler);
+  //     mainPin.removeEventListener('mouseout', mainPinStopHandler);
+  //   };
+  //   mainPin.addEventListener('mousemove', mainPinMouseMoveHandler);
+  //   mainPin.addEventListener('mouseup', mainPinStopHandler);
+  //   mainPin.addEventListener('mouseout', mainPinStopHandler);
+  // }
 
   function mainPinEnterDownHandler(evt) {
     if (evt.keyCode === ENTER_KEY_CODE) {
@@ -164,13 +210,13 @@
     window.form.validation();
   }
 
-  var filterByType = function (item) {
+  function filterByType(item) {
     return houseTypeQuantity.value === FILTER_DEFAULT_VALUE ?
       true :
       item.offer.type === houseTypeQuantity.value;
-  };
+  }
 
-  var filterByPrice = function (item) {
+  function filterByPrice(item) {
     if (housePriceQuantity.value === FILTER_DEFAULT_VALUE) {
       return true;
     } else if (housePriceQuantity.value === MIN_PRICE_ID) {
@@ -180,21 +226,21 @@
     } else {
       return item.offer.price >= MAX_PRICE;
     }
-  };
+  }
 
-  var filterByRooms = function (item) {
+  function filterByRooms(item) {
     return houseRoomsQuantity.value === FILTER_DEFAULT_VALUE ?
       true :
       item.offer.rooms === parseInt(houseRoomsQuantity.value, 10);
-  };
+  }
 
-  var filterByGuests = function (item) {
+  function filterByGuests(item) {
     return houseGuestsQuantity.value === FILTER_DEFAULT_VALUE ?
       true :
       item.offer.guests === parseInt(houseGuestsQuantity.value, 10);
-  };
+  }
 
-  var filterByFeatures = function (item) {
+  function filterByFeatures(item) {
     return Array.from(houseFeatures)
       .filter(function (element) {
         return element.checked === true;
@@ -205,21 +251,35 @@
       .every(function (feature) {
         return item.offer.features.includes(feature);
       });
-  };
+  }
 
-  var filterData = function (data) {
+  function filterData(data) {
     return data
       .filter(function (item) {
         return filterByType(item) && filterByPrice(item) && filterByRooms(item) &&
           filterByGuests(item) && filterByFeatures(item);
       })
       .slice(0, MAX_PINS_AMOUNT);
-  };
+  }
 
-  document.querySelector('.map__filters').addEventListener('change', function () {
+  function debounce(callback, debounceInterval) {
+    var lastTimeout = null;
+    return function () {
+      var args = arguments;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        callback.apply(null, args);
+      }, debounceInterval);
+    };
+  }
+
+  var onFiltersChange = debounce(function () {
     renderPinsOnMap(filterData(defaultPins));
     window.pin.pins = filterData(defaultPins);
-  });
+  }, DEBOUNCE_INTERVAL);
+  document.querySelector('.map__filters').addEventListener('change', onFiltersChange);
 
   window.pin = {
     formHtmlClassList: formHtmlClassList,
