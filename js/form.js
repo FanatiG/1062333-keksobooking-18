@@ -63,6 +63,7 @@
     priceHtmlElement.style.border = CORRECT_INPUT_STYLE_BORDER;
     window.data.mainPinElement.style.left = MAIN_PIN_DEFAULT_STYLE_LEFT;
     window.data.mainPinElement.style.top = MAIN_PIN_DEFAULT_STYLE_TOP;
+    document.querySelector('.map__card').classList.add('hidden');
     window.data.mapHtmlClassList.add('map--faded');
     window.pin.formHtmlClassList.add('ad-form--disabled');
     mapForm.reset();
