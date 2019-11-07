@@ -57,13 +57,13 @@
     var isPinsOnPage = document.querySelectorAll('.map__pin:not(.map__pin--main)');
     var clientHousePhoto = document.querySelector('.ad-form__photo img');
     var clientHousePhotoContainer = document.querySelector('.ad-form__photo');
+    var popupElement = document.querySelector('.map__card');
 
     guestsNumberElement.style.border = CORRECT_INPUT_STYLE_BORDER;
     titleHtmlElement.style.border = CORRECT_INPUT_STYLE_BORDER;
     priceHtmlElement.style.border = CORRECT_INPUT_STYLE_BORDER;
     window.data.mainPinElement.style.left = MAIN_PIN_DEFAULT_STYLE_LEFT;
     window.data.mainPinElement.style.top = MAIN_PIN_DEFAULT_STYLE_TOP;
-    document.querySelector('.map__card').classList.add('hidden');
     window.data.mapHtmlClassList.add('map--faded');
     window.pin.formHtmlClassList.add('ad-form--disabled');
     mapForm.reset();
@@ -78,6 +78,9 @@
     document.querySelector('.ad-form-header__preview img').src = 'img/muffin-grey.svg';
     if (clientHousePhoto) {
       clientHousePhoto.src = 'img/muffin-grey.svg';
+    }
+    if (popupElement) {
+      document.querySelector('.map__card').classList.add('hidden');
     }
     while (clientHousePhotoContainer.firstChild) {
       clientHousePhotoContainer.removeChild(clientHousePhotoContainer.firstChild);
