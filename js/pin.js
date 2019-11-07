@@ -7,12 +7,12 @@
   var PIN_WIDTH = document.querySelector('.map__pin--main img').offsetWidth;
   var MAX_X_VALUE = MAP_WIDTH - (PIN_WIDTH / 2);
   var LOCATION_X = [0, MAX_X_VALUE];
-  var LOCATION_Y = [130, 630];
+  var ACTIVE_MAIN_PIN_HEIGHT = PIN_WIDTH + window.data.PIN_LEG_HEIGHT;
+  var LOCATION_Y = [130 - ACTIVE_MAIN_PIN_HEIGHT, 630 - ACTIVE_MAIN_PIN_HEIGHT];
   var MIN_PRICE = 10000;
   var MAX_PRICE = 50000;
   var MIN_PRICE_ID = 'low';
   var MID_PRICE_ID = 'middle';
-  var FORM_NUMBER = 0;
   var FILTER_DEFAULT_VALUE = 'any';
 
   var formHtmlClassList = document.querySelector('.ad-form--disabled').classList;
@@ -54,11 +54,9 @@
     addPopupOnPins();
     defaultPins = window.xhr.serverData;
     window.pin.pins = defaultPins;
-    for (var elem in window.form.mapForm) {
-      if (Object.prototype.hasOwnProperty.call(window.form.mapForm, elem)) {
-        window.form.mapForm[elem].removeAttribute('disabled', 'disabled');
-      }
-    }
+    Array.from(window.form.mapForm).forEach(function (item) {
+      item.removeAttribute('disabled', 'disabled');
+    });
   }
 
   function generatePinsData(pinsDataList) {
@@ -68,11 +66,9 @@
       removeExcessivePins = pinsDataList;
     }
     var fragment = document.createDocumentFragment();
-    for (var elem in removeExcessivePins) {
-      if (Object.prototype.hasOwnProperty.call(removeExcessivePins, elem)) {
-        fragment.appendChild(createPin(removeExcessivePins[elem], elem));
-      }
-    }
+    removeExcessivePins.forEach(function (item, index) {
+      fragment.appendChild(createPin(item, index));
+    });
     mapPinsElement.appendChild(fragment);
   }
 
@@ -138,12 +134,10 @@
 
   function addPopupOnPins() {
     var pinsElementList = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var elem in pinsElementList) {
-      if (Object.prototype.hasOwnProperty.call(pinsElementList, elem)) {
-        pinsElementList[elem].addEventListener('mousedown', pinMouseDownHandler);
-        pinsElementList[elem].addEventListener('keydown', pinEnterDownHandler);
-      }
-    }
+    pinsElementList.forEach(function (item) {
+      item.addEventListener('mousedown', pinMouseDownHandler);
+      item.addEventListener('keydown', pinEnterDownHandler);
+    });
   }
 
   function pinMouseDownHandler() {
@@ -222,7 +216,7 @@
       .slice(0, MAX_PINS_AMOUNT);
   };
 
-  document.forms[FORM_NUMBER].addEventListener('change', function () {
+  document.querySelector('.map__filters').addEventListener('change', function () {
     renderPinsOnMap(filterData(defaultPins));
     window.pin.pins = filterData(defaultPins);
   });

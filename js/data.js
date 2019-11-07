@@ -23,11 +23,9 @@
   }
 
   function toggleAvailability(selector, status) {
-    for (var elem in selector) {
-      if (Object.prototype.hasOwnProperty.call(selector, elem)) {
-        selector[elem].disabled = status;
-      }
-    }
+    selector.forEach(function (item) {
+      item.disabled = status;
+    });
   }
 
   window.data = {
