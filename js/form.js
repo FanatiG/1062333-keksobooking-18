@@ -80,7 +80,7 @@
       clientHousePhoto.src = 'img/muffin-grey.svg';
     }
     if (popupElement) {
-      document.querySelector('.map__card').classList.add('hidden');
+      popupElement.classList.add('hidden');
     }
     while (clientHousePhotoContainer.firstChild) {
       clientHousePhotoContainer.removeChild(clientHousePhotoContainer.firstChild);
