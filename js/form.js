@@ -6,8 +6,6 @@
   var MAX_ROOMS_NUMBER = 100;
   var GUESTS_NUMBER = 0;
   var NUMBER_SYSTEM = 10;
-  var FIRST_FORM = 0;
-  var SECOND_FORM = 1;
   var ERROR_INPUT_STYLE_BORDER = 'solid #ff6d51';
   var CORRECT_INPUT_STYLE_BORDER = '1px solid #d9d9d3';
   var MAIN_PIN_DEFAULT_STYLE_LEFT = '570px';
@@ -46,16 +44,13 @@
   var submitButtonElement = document.querySelector('.ad-form__submit');
   var resetButtonElement = document.querySelector('.ad-form__reset');
   var mainMap = document.querySelector('.map__pins');
-  var mainForm = document.forms[SECOND_FORM];
-  var mapForm = document.forms[FIRST_FORM];
-  var mainFormElements = document.forms[SECOND_FORM].children;
-
+  var mainForm = document.querySelector('.ad-form');
+  var mapForm = document.querySelector('.map__filters');
+  var mainFormElements = document.querySelector('.ad-form').children;
   document.onload = function () {
-    for (var elem in mapForm) {
-      if (Object.prototype.hasOwnProperty.call(mapForm, elem)) {
-        mapForm[elem].setAttribute('disabled', 'disabled');
-      }
-    }
+    Array.from(mapForm).forEach(function (item) {
+      item.setAttribute('disabled', 'disabled');
+    });
   }();
 
   function resetPage() {
@@ -72,17 +67,13 @@
     window.pin.formHtmlClassList.add('ad-form--disabled');
     mapForm.reset();
     typeChangeHandler();
-    for (var elem in isPinsOnPage) {
-      if (Object.prototype.hasOwnProperty.call(isPinsOnPage, elem)) {
-        mainMap.removeChild(isPinsOnPage[elem]);
-      }
-    }
+    Array.from(isPinsOnPage).forEach(function (item) {
+      mainMap.removeChild(item);
+    });
     mainForm.reset();
-    for (elem in mainFormElements) {
-      if (Object.prototype.hasOwnProperty.call(mainFormElements, elem)) {
-        mainFormElements[elem].setAttribute('disabled', 'disabled');
-      }
-    }
+    Array.from(mainFormElements).forEach(function (item) {
+      item.setAttribute('disabled', 'disabled');
+    });
     document.querySelector('.ad-form-header__preview img').src = 'img/muffin-grey.svg';
     if (clientHousePhoto) {
       clientHousePhoto.src = 'img/muffin-grey.svg';

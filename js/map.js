@@ -2,6 +2,7 @@
 'use strict';
 (function () {
   var ESC_KEY_CODE = 27;
+
   var mapElement = document.querySelector('.map');
   var mapContainerElement = document.querySelector('.map__filters-container');
   var popup = document.querySelector('#card').content.querySelector('.map__card').cloneNode(true);
@@ -26,11 +27,10 @@
     document.querySelector('.map__card').classList.add('hidden');
     document.querySelector('.map').removeChild(document.querySelector('.map__card'));
     window.data.setAddressValue(window.data.PIN_LEG_HEIGHT);
-    for (var pins in window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)')) {
-      if (Object.prototype.hasOwnProperty.call(window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)'), pins)) {
-        window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)')[pins].classList.remove('map__pin--active');
-      }
-    }
+    var allButMainPins = window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)');
+    allButMainPins.forEach(function (item) {
+      item.classList.remove('map__pin--active');
+    });
   }
 
   function popupCloseMouseHandler() {
@@ -50,11 +50,10 @@
     document.querySelector('.map__card').classList.remove('hidden');
     document.querySelector('.popup__close').addEventListener('mousedown', popupCloseMouseHandler);
     document.addEventListener('keydown', popupCloseButtonHandler);
-    for (var pins in window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)')) {
-      if (Object.prototype.hasOwnProperty.call(window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)'), pins)) {
-        window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)')[pins].classList.remove('map__pin--active');
-      }
-    }
+    var allButMainPins = window.pin.mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)');
+    allButMainPins.forEach(function (item) {
+      item.classList.remove('map__pin--active');
+    });
     if (event.target instanceof Image) {
       event.target.parentNode.classList.add('map__pin--active');
     } else {
@@ -71,36 +70,34 @@
     popup.querySelector('.popup__type').textContent = translate[pinsList.offer.type]['rusName'];
     popup.querySelector('.popup__text--capacity').textContent = pinsList.offer.rooms + ' комнат(ы) для ' + pinsList.offer.guests + ' гостя(ей)';
     popup.querySelector('.popup__text--time').textContent = 'Заезд после ' + pinsList.offer.checkin + ', выезд после ' + pinsList.offer.checkout;
+    var popupFeatures = popup.querySelector('.popup__features');
+    var popupPhotos = popup.querySelector('.popup__photos');
     if (pinsList.offer.features.length !== 0) {
-      while (popup.querySelector('.popup__features').firstChild) {
-        popup.querySelector('.popup__features').removeChild(popup.querySelector('.popup__features').firstChild);
+      while (popupFeatures.firstChild) {
+        popupFeatures.removeChild(popupFeatures.firstChild);
       }
-      for (var features in pinsList.offer.features) {
-        if (Object.prototype.hasOwnProperty.call(pinsList.offer.features, features)) {
-          var featureClone = feature.cloneNode(true);
-          featureClone.classList.value = 'popup__feature popup__feature--' + pinsList.offer.features[features];
-          popup.querySelector('.popup__features').appendChild(featureClone);
-        }
-      }
+      pinsList.offer.features.forEach(function (item) {
+        var featureClone = feature.cloneNode(true);
+        featureClone.classList.value = 'popup__feature popup__feature--' + item;
+        popupFeatures.appendChild(featureClone);
+      });
     } else {
-      while (popup.querySelector('.popup__features').firstChild) {
-        popup.querySelector('.popup__features').removeChild(popup.querySelector('.popup__features').firstChild);
+      while (popupFeatures.firstChild) {
+        popupFeatures.removeChild(popupFeatures.firstChild);
       }
     }
     if (pinsList.offer.photos.length !== 0) {
-      while (popup.querySelector('.popup__photos').firstChild) {
-        popup.querySelector('.popup__photos').removeChild(popup.querySelector('.popup__photos').firstChild);
+      while (popupPhotos.firstChild) {
+        popupPhotos.removeChild(popupPhotos.firstChild);
       }
-      for (var photos in pinsList.offer.photos) {
-        if (Object.prototype.hasOwnProperty.call(pinsList.offer.photos, photos)) {
-          var photoClone = photo.cloneNode(true);
-          photoClone.src = pinsList.offer.photos[photos];
-          popup.querySelector('.popup__photos').appendChild(photoClone);
-        }
-      }
+      pinsList.offer.photos.forEach(function (item) {
+        var photoClone = photo.cloneNode(true);
+        photoClone.src = item;
+        popupPhotos.appendChild(photoClone);
+      });
     } else {
-      while (popup.querySelector('.popup__photos').firstChild) {
-        popup.querySelector('.popup__photos').removeChild(popup.querySelector('.popup__photos').firstChild);
+      while (popupPhotos.firstChild) {
+        popupPhotos.removeChild(popupPhotos.firstChild);
       }
     }
     popup.querySelector('.popup__avatar').src = pinsList.author.avatar;

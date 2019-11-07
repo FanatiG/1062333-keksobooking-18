@@ -7,13 +7,14 @@
   var PIN_WIDTH = document.querySelector('.map__pin--main img').offsetWidth;
   var MAX_X_VALUE = MAP_WIDTH - (PIN_WIDTH / 2);
   var LOCATION_X = [0, MAX_X_VALUE];
-  var LOCATION_Y = [130, 630];
+  var ACTIVE_MAIN_PIN_HEIGHT = PIN_WIDTH + window.data.PIN_LEG_HEIGHT;
+  var LOCATION_Y = [130 - ACTIVE_MAIN_PIN_HEIGHT, 630 - ACTIVE_MAIN_PIN_HEIGHT];
   var MIN_PRICE = 10000;
   var MAX_PRICE = 50000;
   var MIN_PRICE_ID = 'low';
   var MID_PRICE_ID = 'middle';
-  var FORM_NUMBER = 0;
   var FILTER_DEFAULT_VALUE = 'any';
+  var DEBOUNCE_INTERVAL = 500;
 
   var formHtmlClassList = document.querySelector('.ad-form--disabled').classList;
   var pin = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -54,11 +55,9 @@
     addPopupOnPins();
     defaultPins = window.xhr.serverData;
     window.pin.pins = defaultPins;
-    for (var elem in window.form.mapForm) {
-      if (Object.prototype.hasOwnProperty.call(window.form.mapForm, elem)) {
-        window.form.mapForm[elem].removeAttribute('disabled', 'disabled');
-      }
-    }
+    Array.from(window.form.mapForm).forEach(function (item) {
+      item.removeAttribute('disabled', 'disabled');
+    });
   }
 
   function generatePinsData(pinsDataList) {
@@ -68,66 +67,63 @@
       removeExcessivePins = pinsDataList;
     }
     var fragment = document.createDocumentFragment();
-    for (var elem in removeExcessivePins) {
-      if (Object.prototype.hasOwnProperty.call(removeExcessivePins, elem)) {
-        fragment.appendChild(createPin(removeExcessivePins[elem], elem));
-      }
-    }
+    removeExcessivePins.forEach(function (item, index) {
+      fragment.appendChild(createPin(item, index));
+    });
     mapPinsElement.appendChild(fragment);
   }
 
   function mainPinMouseDownHandler(evt) {
+    evt.preventDefault();
     if (formHtmlClassList.contains('ad-form--disabled')) {
       activatePage();
     } else {
-      dragDropMainPin(evt);
-    }
-  }
+      var mainPin = window.data.mainPinElement;
+      var startCoords = {
+        x: evt.clientX,
+        y: evt.clientY
+      };
 
-  function dragDropMainPin(evt) {
-    var mainPin = window.data.mainPinElement;
-    mainPin.style.zIndex = getComputedStyle(document.querySelector('.map__pin'))['zIndex'] + 1;
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
-    var mainPinMouseMoveHandler = function (moveEvt) {
-      var minCoordX = LOCATION_X[0];
-      var maxCoordX = LOCATION_X[1];
-      var minCoordY = LOCATION_Y[0];
-      var maxCoordY = LOCATION_Y[1];
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
+      var onMouseMove = function (moveEvt) {
+        moveEvt.preventDefault();
+
+        var shift = {
+          x: startCoords.x - moveEvt.clientX,
+          y: startCoords.y - moveEvt.clientY
+        };
+
+        startCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+
+        var bordersOfPinPosition = {
+          minX: LOCATION_X[0],
+          maxX: LOCATION_X[1],
+          minY: LOCATION_Y[0],
+          maxY: LOCATION_Y[1]
+        };
+
+        if (mainPin.offsetLeft - shift.x >= bordersOfPinPosition.minX &&
+          mainPin.offsetLeft - shift.x <= bordersOfPinPosition.maxX &&
+          mainPin.offsetTop - shift.y >= bordersOfPinPosition.minY &&
+          mainPin.offsetTop - shift.y <= bordersOfPinPosition.maxY) {
+
+          mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+          mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+        }
+
+        window.data.setAddressValue(window.data.PIN_LEG_HEIGHT);
       };
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
+
+      var onMouseUp = function (upEvt) {
+        upEvt.preventDefault();
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
       };
-      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
-      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
-      if (mainPin.style.left.slice(0, -2) < minCoordX) {
-        mainPin.style.left = minCoordX + 'px';
-      }
-      if (mainPin.style.left.slice(0, -2) > maxCoordX) {
-        mainPin.style.left = maxCoordX + 'px';
-      }
-      if (mainPin.style.top.slice(0, -2) < minCoordY) {
-        mainPin.style.top = minCoordY + 'px';
-      }
-      if (mainPin.style.top.slice(0, -2) > maxCoordY) {
-        mainPin.style.top = maxCoordY + 'px';
-      }
-      window.data.setAddressValue(window.data.PIN_LEG_HEIGHT);
-    };
-    var mainPinStopHandler = function () {
-      mainPin.removeEventListener('mousemove', mainPinMouseMoveHandler);
-      mainPin.removeEventListener('mouseup', mainPinStopHandler);
-      mainPin.removeEventListener('mouseout', mainPinStopHandler);
-    };
-    mainPin.addEventListener('mousemove', mainPinMouseMoveHandler);
-    mainPin.addEventListener('mouseup', mainPinStopHandler);
-    mainPin.addEventListener('mouseout', mainPinStopHandler);
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    }
   }
 
   function mainPinEnterDownHandler(evt) {
@@ -138,12 +134,10 @@
 
   function addPopupOnPins() {
     var pinsElementList = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var elem in pinsElementList) {
-      if (Object.prototype.hasOwnProperty.call(pinsElementList, elem)) {
-        pinsElementList[elem].addEventListener('mousedown', pinMouseDownHandler);
-        pinsElementList[elem].addEventListener('keydown', pinEnterDownHandler);
-      }
-    }
+    pinsElementList.forEach(function (item) {
+      item.addEventListener('mousedown', pinMouseDownHandler);
+      item.addEventListener('keydown', pinEnterDownHandler);
+    });
   }
 
   function pinMouseDownHandler() {
@@ -170,13 +164,13 @@
     window.form.validation();
   }
 
-  var filterByType = function (item) {
+  function filterByType(item) {
     return houseTypeQuantity.value === FILTER_DEFAULT_VALUE ?
       true :
       item.offer.type === houseTypeQuantity.value;
-  };
+  }
 
-  var filterByPrice = function (item) {
+  function filterByPrice(item) {
     if (housePriceQuantity.value === FILTER_DEFAULT_VALUE) {
       return true;
     } else if (housePriceQuantity.value === MIN_PRICE_ID) {
@@ -186,21 +180,21 @@
     } else {
       return item.offer.price >= MAX_PRICE;
     }
-  };
+  }
 
-  var filterByRooms = function (item) {
+  function filterByRooms(item) {
     return houseRoomsQuantity.value === FILTER_DEFAULT_VALUE ?
       true :
       item.offer.rooms === parseInt(houseRoomsQuantity.value, 10);
-  };
+  }
 
-  var filterByGuests = function (item) {
+  function filterByGuests(item) {
     return houseGuestsQuantity.value === FILTER_DEFAULT_VALUE ?
       true :
       item.offer.guests === parseInt(houseGuestsQuantity.value, 10);
-  };
+  }
 
-  var filterByFeatures = function (item) {
+  function filterByFeatures(item) {
     return Array.from(houseFeatures)
       .filter(function (element) {
         return element.checked === true;
@@ -211,21 +205,35 @@
       .every(function (feature) {
         return item.offer.features.includes(feature);
       });
-  };
+  }
 
-  var filterData = function (data) {
+  function filterData(data) {
     return data
       .filter(function (item) {
         return filterByType(item) && filterByPrice(item) && filterByRooms(item) &&
           filterByGuests(item) && filterByFeatures(item);
       })
       .slice(0, MAX_PINS_AMOUNT);
-  };
+  }
 
-  document.forms[FORM_NUMBER].addEventListener('change', function () {
+  function debounce(callback, debounceInterval) {
+    var lastTimeout = null;
+    return function () {
+      var args = arguments;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        callback.apply(null, args);
+      }, debounceInterval);
+    };
+  }
+
+  var onFiltersChange = debounce(function () {
     renderPinsOnMap(filterData(defaultPins));
     window.pin.pins = filterData(defaultPins);
-  });
+  }, DEBOUNCE_INTERVAL);
+  document.querySelector('.map__filters').addEventListener('change', onFiltersChange);
 
   window.pin = {
     formHtmlClassList: formHtmlClassList,

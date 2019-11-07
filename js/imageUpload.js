@@ -21,6 +21,7 @@
     var uploadedFileData = uploadedFileHousePhoto[0];
     var reader = new FileReader();
     reader.onload = (function (theFile) {
+      var image = housePhotoElement.querySelector('img');
       return function (trgt) {
         if (!document.querySelector('.ad-form__photo img')) {
           var imgToInsert = document.createElement('img');
@@ -30,8 +31,8 @@
           imgToInsert.height = housePhotoElement.clientHeight;
           housePhotoElement.appendChild(imgToInsert);
         } else {
-          housePhotoElement.querySelector('img').title = escape(theFile.name);
-          housePhotoElement.querySelector('img').src = trgt.target.result;
+          image.title = escape(theFile.name);
+          image.src = trgt.target.result;
         }
       };
     })(uploadedFileData);
