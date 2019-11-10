@@ -52,7 +52,6 @@
       });
     };
     dataToSend.onreadystatechange = function () {
-      document.addEventListener('keydown', escCloseSuccessMenu);
       function escCloseSuccessMenu(evt) {
         if (evt.keyCode === window.map.ESC_KEY_CODE) {
           serverSuccessMessageTemplate.remove();
@@ -60,6 +59,7 @@
         }
       }
       if (this.readyState === READY_STATE && this.status === STATUS) {
+        document.addEventListener('keydown', escCloseSuccessMenu);
         var fragment = document.createDocumentFragment();
         fragment.appendChild(serverSuccessMessageTemplate);
         serverSuccessMessageTemplate.addEventListener('click', function () {
