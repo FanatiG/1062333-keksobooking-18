@@ -31,10 +31,11 @@
   function sendData() {
     var dataToSend = new XMLHttpRequest();
     dataToSend.onerror = function () {
+      document.addEventListener('keydown', escCloseErrorMenuHandler);
       function escCloseErrorMenuHandler(evt) {
         if (evt.keyCode === window.map.ESC_KEY_CODE) {
           serverErrorMessageTemplate.remove();
-          mainElement.removeEventListener('keydown', escCloseErrorMenuHandler);
+          document.removeEventListener('keydown', escCloseErrorMenuHandler);
         }
       }
       var fragment = document.createDocumentFragment();
@@ -42,7 +43,6 @@
       serverErrorMessageTemplate.addEventListener('click', function () {
         serverErrorMessageTemplate.remove();
       });
-      mainElement.addEventListener('keydown', escCloseErrorMenuHandler);
       mainElement.appendChild(fragment);
       serverErrorMessageTemplate.querySelector('.error__button').addEventListener('click', function () {
         event.stopPropagation();
@@ -50,10 +50,11 @@
       });
     };
     dataToSend.onreadystatechange = function () {
+      document.addEventListener('keydown', escCloseSuccessMenu);
       function escCloseSuccessMenu(evt) {
         if (evt.keyCode === window.map.ESC_KEY_CODE) {
           serverSuccessMessageTemplate.remove();
-          mainElement.removeEventListener('keydown', escCloseSuccessMenu);
+          document.removeEventListener('keydown', escCloseSuccessMenu);
         }
       }
       if (this.readyState === READY_STATE && this.status === STATUS) {
@@ -62,7 +63,6 @@
         serverSuccessMessageTemplate.addEventListener('click', function () {
           serverSuccessMessageTemplate.remove();
         });
-        mainElement.addEventListener('keydown', escCloseSuccessMenu);
         mainElement.appendChild(fragment);
       }
     };
