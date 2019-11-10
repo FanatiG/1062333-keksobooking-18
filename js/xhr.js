@@ -42,11 +42,13 @@
       fragment.appendChild(serverErrorMessageTemplate);
       serverErrorMessageTemplate.addEventListener('click', function () {
         serverErrorMessageTemplate.remove();
+        document.removeEventListener('keydown', escCloseErrorMenuHandler);
       });
       mainElement.appendChild(fragment);
       serverErrorMessageTemplate.querySelector('.error__button').addEventListener('click', function () {
         event.stopPropagation();
         serverErrorMessageTemplate.remove();
+        document.removeEventListener('keydown', escCloseErrorMenuHandler);
       });
     };
     dataToSend.onreadystatechange = function () {
@@ -62,6 +64,7 @@
         fragment.appendChild(serverSuccessMessageTemplate);
         serverSuccessMessageTemplate.addEventListener('click', function () {
           serverSuccessMessageTemplate.remove();
+          document.removeEventListener('keydown', escCloseSuccessMenu);
         });
         mainElement.appendChild(fragment);
       }
